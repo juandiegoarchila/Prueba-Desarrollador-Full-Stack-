@@ -33,4 +33,13 @@ export class LocalOrderRepository implements OrderRepository {
         });
     });
   }
+
+  async updateStatus(orderId: string, status: 'pending' | 'synced' | 'completed'): Promise<void> {
+      const orders = (await this.storage.get(this.ORDERS_KEY)) || [];
+      const orderIndex = orders.findIndex((o: Order) => o.id === orderId);
+      if (orderIndex > -1) {
+          orders[orderIndex].status = status;
+          await this.storage.set(this.ORDERS_KEY, orders);
+      }
+  }
 }

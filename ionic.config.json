@@ -5,5 +5,8 @@
   "locationId": "us-central",
   "apiKey": "AIzaSyDiw1nDaNAK0-PWWTi5TFLyqzCVKEDFBBQ",
   "authDomain": "grupo-merpes-3fa68.firebaseapp.com",
-  "messagingSenderId": "1012902268947"
+  "type": "angular",
+  "integrations": {
+    "cordova": {}
+  }
 }

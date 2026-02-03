@@ -35,5 +35,11 @@ export class FirebaseOrderRepository implements OrderRepository {
         return snapshot.docs.map(doc => doc.data() as Order);
     }));
   }
+
+  async updateStatus(orderId: string, status: 'pending' | 'synced' | 'completed'): Promise<void> {
+      // In firebase we might update the doc, but for now we assume createOrder handles it or we implement doc update later
+      // This is primarily for local sync status
+      return Promise.resolve();
+  }
 }
 import { map } from 'rxjs/operators';

@@ -22,10 +22,22 @@ Cumplir con la prueba técnica solicitada por Grupo Merpes, entregando una aplic
    ```bash
    ionic serve
    ```
-4. Generar APK (requiere entorno Android):
-   ```bash
-   ionic cordova build android
-   ```
 
-## Estructura
+## Generación de APK (Android)
+
+Para generar el archivo APK ejecutable:
+
+1. Asegurar tener instalado JDK 11+, Android Studio y SDK Tools.
+2. Agregar la plataforma Android (si no existe):
+   ```bash
+   ionic cordova platform add android
+   ```
+3. Construir el proyecto:
+   ```bash
+   ionic cordova build android --prod
+   ```
+4. El APK se generará en:
+   `platforms/android/app/build/outputs/apk/debug/app-debug.apk`
+
+> Nota: Para firmar el APK para producción, usar el flag `--release` y firmar con `jarsigner`.
 El proyecto sigue una arquitectura modular separando Core (Lógica de negocio singleton), Shared (Reutilizables) y Pages (Vistas).

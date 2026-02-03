@@ -13,7 +13,11 @@
 **Decisión**: Uso de **Services con RxJS BehaviorSubjects**.
 **Justificación**: Redux/NgRx sería overkill para este alcance. Los servicios gestionan el estado del carrito y usuario en memoria y sincronizan con Storage.
 
-## 3. Ionic Storage
-**Contexto**: Necesidad de guardar datos persistentes en móvil.
-**Decisión**: Usar `@ionic/storage-angular`.
-**Justificación**: Abstrae la complejidad de SQLite (en dispositivo) e IndexedDB (en web), ideal para apps híbridas.
+## 4. Estrategia Offline-First para Pedidos
+**Contexto**: Requerimiento de guardar pedido localmente y sincronizar.
+**Decisión**: 
+- `OrderService` guarda SIEMPRE en local (`LocalOrderRepository`) con estado `pending`.
+- Si hay conexión y bandera `useFirebase` activa, intenta enviar a `FirebaseOrderRepository`.
+- Si el envío es exitoso, actualiza el estado local a `synced`.
+- Si falla, queda como `pending` y se preserva la data.
+**Justificación**: Garantiza que el usuario nunca pierda un pedido por falta de internet y desacopla la UI de la latencia de red.
