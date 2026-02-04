@@ -17,7 +17,8 @@ export class LocalAuthRepository implements AuthRepository {
     // Mock login logic
     return new Observable(observer => {
         this.storage.get(this.USERS_DB_KEY).then(users => {
-            const user = (users || []).find((u: any) => u.email === email && u.password === password);
+            const usersList = Array.isArray(users) ? users : [];
+            const user = usersList.find((u: any) => u.email === email && u.password === password);
             if (user) {
                 const safeUser: User = { uid: user.uid, email: user.email, displayName: user.displayName };
                 this.storage.set(this.USER_KEY, safeUser);
@@ -33,7 +34,7 @@ export class LocalAuthRepository implements AuthRepository {
   register(name: string, email: string, password: string): Observable<User> {
       return new Observable(observer => {
           this.storage.get(this.USERS_DB_KEY).then(users => {
-              const currentUsers = users || [];
+              const currentUsers: any[] = Array.isArray(users) ? users : [];
               const exists = currentUsers.find((u: any) => u.email === email);
               if (exists) {
                   observer.error('El usuario ya existe');
@@ -64,7 +65,9 @@ export class LocalAuthRepository implements AuthRepository {
   getCurrentUser(): Observable<User | null> {
       return new Observable(observer => {
           this.storage.get(this.USER_KEY).then(user => {
-              observer.next(user || null);
+              // Type guard: verificar que user tiene la estructura de User
+              const isUser = user && typeof user === 'object' && 'uid' in user && 'email' in user;
+              observer.next(isUser ? user as User : null);
               observer.complete();
           });
       });
@@ -74,7 +77,8 @@ export class LocalAuthRepository implements AuthRepository {
     return new Promise((resolve, reject) => {
         // Simulación: Verificar si el correo existe en la "base de datos" local
         this.storage.get(this.USERS_DB_KEY).then(users => {
-            const user = (users || []).find((u: any) => u.email === email);
+            const usersList = Array.isArray(users) ? users : [];
+            const user = usersList.find((u: any) => u.email === email);
             if (user) {
                 // Simular éxito
                 console.log(`[LocalAuth] Email de restablecimiento enviado a ${email}`);

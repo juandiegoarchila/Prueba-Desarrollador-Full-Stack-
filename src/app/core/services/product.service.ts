@@ -3,7 +3,34 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Product } from '../../models/product.model';
 import { ProductRepository } from '../../repositories/product.repository';
+import { environment } from 'src/environments/environment';
 
+/**
+ * Servicio de gestión de productos del catálogo.
+ * 
+ * Proporciona acceso al catálogo de productos desde un repositorio
+ * (puede ser un archivo JSON local o una API externa).
+ * 
+ * Características:
+ * - Carga de productos desde ProductRepository
+ * - Fallback a datos hardcodeados si falla la carga
+ * - Búsqueda de productos por ID
+ * - Obtención de productos relacionados
+ * - Logs solo en desarrollo (no en producción)
+ * 
+ * @example
+ * constructor(private productService: ProductService) {}
+ * 
+ * // Obtener todos los productos
+ * this.productService.getProducts().subscribe(products => {
+ *   console.log('Catálogo:', products);
+ * });
+ * 
+ * // Obtener un producto específico
+ * this.productService.getProductById(1).subscribe(product => {
+ *   console.log('Producto:', product);
+ * });
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -11,11 +38,33 @@ export class ProductService {
 
   constructor(private repository: ProductRepository) { }
 
+  /**
+   * Obtiene la lista completa de productos del catálogo.
+   * 
+   * Si falla la carga desde el repositorio (por ejemplo, si products.json
+   * no existe), devuelve un array hardcodeado de 3 productos como fallback.
+   * 
+   * @returns Observable con el array de productos
+   * 
+   * @example
+   * this.productService.getProducts().subscribe({
+   *   next: (products) => this.displayProducts(products),
+   *   error: (err) => console.error('Error:', err)
+   * });
+   */
   getProducts(): Observable<Product[]> {
     return this.repository.getProducts().pipe(
-      tap(products => console.log('Productos cargados:', products)),
+      // Log solo en desarrollo para debugging
+      tap(products => {
+        if (!environment.production) {
+          console.log('✅ Productos cargados exitosamente:', products.length);
+        }
+      }),
       catchError(err => {
-        console.error('Error cargando products.json, usando backup:', err);
+        // Log del error solo en desarrollo
+        if (!environment.production) {
+          console.error('❌ Error cargando products.json, usando datos de respaldo:', err);
+        }
         // Fallback data en caso de error de carga
         return of([
           {
@@ -93,14 +142,43 @@ export class ProductService {
     );
   }
 
+  /**
+   * Busca un producto específico por su ID.
+   * 
+   * @param productId - ID numérico del producto a buscar
+   * @returns Observable con el producto encontrado o null si no existe
+   * 
+   * @example
+   * this.productService.getProductById(1).subscribe(product => {
+   *   if (product) {
+   *     console.log('Encontrado:', product.name);
+   *   } else {
+   *     console.log('Producto no encontrado');
+   *   }
+   * });
+   */
   getProductById(productId: number): Observable<Product | null> {
     return this.getProducts().pipe(
+      // Buscar el producto en el array
       map(products => products.find(product => product.id === productId) ?? null)
     );
   }
 
+  /**
+   * Obtiene productos relacionados (todos excepto el producto actual).
+   * Útil para mostrar recomendaciones en la página de detalle.
+   * 
+   * @param currentId - ID del producto actual a excluir
+   * @returns Observable con array de productos relacionados
+   * 
+   * @example
+   * this.productService.getRelatedProducts(1).subscribe(related => {
+   *   console.log('Otros productos:', related);
+   * });
+   */
   getRelatedProducts(currentId: number): Observable<Product[]> {
     return this.getProducts().pipe(
+      // Filtrar todos los productos excepto el actual
       map(products => products.filter(product => product.id !== currentId))
     );
   }

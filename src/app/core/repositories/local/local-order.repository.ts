@@ -17,7 +17,7 @@ export class LocalOrderRepository implements OrderRepository {
       const run = async () => {
         try {
           const orders = await this.storage.get(this.ORDERS_KEY);
-          const currentOrders = orders || [];
+          const currentOrders: Order[] = Array.isArray(orders) ? orders : [];
           currentOrders.push(order);
           await this.storage.set(this.ORDERS_KEY, currentOrders);
           observer.next(order);
@@ -35,7 +35,8 @@ export class LocalOrderRepository implements OrderRepository {
       const run = async () => {
         try {
           const orders = await this.storage.get(this.ORDERS_KEY);
-          const userOrders = (orders || []).filter((o: Order) => o.userId === userId);
+          const ordersList: Order[] = Array.isArray(orders) ? orders : [];
+          const userOrders = ordersList.filter((o: Order) => o.userId === userId);
           observer.next(userOrders);
           observer.complete();
         } catch (err) {
@@ -47,7 +48,8 @@ export class LocalOrderRepository implements OrderRepository {
   }
 
   async updateStatus(orderId: string, status: 'pending' | 'synced' | 'completed'): Promise<void> {
-      const orders = (await this.storage.get(this.ORDERS_KEY)) || [];
+      const ordersData = await this.storage.get(this.ORDERS_KEY);
+      const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
       const orderIndex = orders.findIndex((o: Order) => o.id === orderId);
       if (orderIndex > -1) {
           orders[orderIndex].status = status;
