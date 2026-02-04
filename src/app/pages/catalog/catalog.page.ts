@@ -27,7 +27,7 @@ import { AuthService } from '../../core/services/auth.service';
       </div>
 
       <div *ngIf="!isLoading">
-        <ion-grid class="ion-no-padding" *ngIf="products.length > 0; else empty">
+        <ion-grid class="ion-no-padding catalog-grid" *ngIf="products.length > 0; else empty">
           <ion-row>
             <ion-col size="12" size-md="6" size-lg="4" *ngFor="let p of products">
               <app-product-card 
@@ -74,6 +74,17 @@ import { AuthService } from '../../core/services/auth.service';
         align-items: center;
         justify-content: center;
         min-height: 300px;
+    }
+    ion-grid.catalog-grid {
+      margin: 8px auto 16px;
+      max-width: 1200px;
+    }
+    ion-row {
+      margin-left: -12px;
+      margin-right: -12px;
+    }
+    ion-col {
+      padding: 12px;
     }
   `]
 })
