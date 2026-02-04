@@ -19,6 +19,7 @@ export class ProductDetailPage implements OnInit {
   isLoading = true;
   discountPercent: number | null = null;
   selectedImage: string | null = null;
+  isImageModalOpen = false;
 
   // Expose cart count for key in template
   cartItemCount$ = this.cartService.itemCount$;

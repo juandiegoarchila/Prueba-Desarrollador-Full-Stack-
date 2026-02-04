@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const getDiscountPercent = (price, previousPrice) => {\n  if (!previousPrice || previousPrice <= price) {\n    return null;\n  }\n  const discount = Math.round((1 - price / previousPrice) * 100);\n  return discount > 0 ? discount : null;\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

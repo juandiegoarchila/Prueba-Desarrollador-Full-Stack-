@@ -18,6 +18,18 @@ body {
 .text-medium { font-weight: 500; }
 .text-small { font-size: 0.85rem; }
 
+/* Fullscreen Modal Override */
+.fullscreen-modal-class {
+    --background: transparent;
+    &::part(content) {
+        height: 100%;
+        width: 100%;
+        max-height: 100%;
+        max-width: 100%;
+        background: transparent;
+    }
+}
+
 .section-title {
     font-size: 1.5rem;
     font-weight: 700;

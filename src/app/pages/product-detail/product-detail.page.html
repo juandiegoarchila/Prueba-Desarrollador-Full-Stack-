@@ -22,11 +22,14 @@
       
       <!-- Left Column: Gallery (Mitad) -->
       <ion-col size="12" size-md="6" size-lg="6" class="gallery-col">
-        <div class="main-image-wrapper">
+        <div class="main-image-wrapper" (click)="isImageModalOpen = true">
           <ion-img [src]="selectedImage || product.imageUrl" [alt]="product.name"></ion-img>
           
           <div class="badges">
             <span class="badge discount" *ngIf="discountPercent">-{{ discountPercent }}%</span>
+          </div>
+          <div class="zoom-hint">
+            <ion-icon name="search-outline"></ion-icon>
           </div>
         </div>
 
@@ -98,6 +101,20 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <!-- Fullscreen Image Modal -->
+  <ion-modal [isOpen]="isImageModalOpen" (didDismiss)="isImageModalOpen = false" cssClass="fullscreen-modal-class">
+    <ng-template>
+      <div class="fullscreen-container">
+        <ion-button fill="clear" color="light" class="close-modal" (click)="isImageModalOpen = false">
+          <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <div class="zoom-image-container">
+          <img [src]="selectedImage || (product?.imageUrl)" [alt]="product?.name" class="fullscreen-img" />
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
 
   <!-- Related Products -->
   <div class="related-section" *ngIf="!isLoading && relatedProducts.length > 0">
