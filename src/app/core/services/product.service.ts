@@ -20,12 +20,29 @@ export class ProductService {
         return of([
           {
             "id": 1,
-            "name": "Lavadora LG Asfecol 13Kg Carga Superior Gris",
+            "name": "Lavadora LG Smart Inverter WT13DPBK 13Kg",
             "price": 1499900,
             "previousPrice": 1994900,
             "rating": 4.6,
-            "description": "Carga superior de 13 kg con diseño compacto y eficiente.",
-            "imageUrl": "assets/img/products/lavadora-lg-13kg.png"
+            "description": "La Lavadora LG Smart Inverter WT13DPBK tiene un rendimiento de lavado superior, más limpio, más higiénico, El motor Smart Inverter es confiable, silencioso y duradero, ajusta la energía según la velocidad y la fuerza que requiere cada movimiento del tambor así controla con eficiencia el consumo energético.",
+            "imageUrl": "assets/img/products/lavadora-lg-13kg.png",
+            "images": [
+              "assets/img/products/lavadora-lg-13kg.png",
+              "assets/img/products/lavadora imagen 2.jpg",
+              "assets/img/products/lavadora imagen 3.jpg"
+            ],
+            "features": [
+              "Capacidad de lavado: 13 kg | 28 Lb",
+              "Tipo de carga: Superior",
+              "Color: Gris",
+              "Panel digital: Sí",
+              "Programas de lavado: 8",
+              "Dimensiones: Ancho 52 cm, Alto 91.8 cm, Fondo 50 cm",
+              "TurboDrum: Lavado poderoso",
+              "Filtro atrapa motas",
+              "Smart Diagnosis: Diagnóstico inteligente"
+            ],
+            "warranty": "Garantía de 12 meses por defectos de fábrica y/o daños internos directamente con la marca."
           },
           {
             "id": 2,

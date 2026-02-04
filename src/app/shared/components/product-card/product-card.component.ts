@@ -25,7 +25,7 @@ import { getDiscountPercent } from '../../utils/price.util';
           size="small"
           class="details-link"
           [routerLink]="['/product', product.id]">
-          Conoce más
+          Ver producto
         </ion-button>
 
         <div class="price-row">

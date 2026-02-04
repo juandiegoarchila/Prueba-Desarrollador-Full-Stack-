@@ -1,0 +1,101 @@
+<app-header title="Detalle" [backButton]="true"></app-header>
+
+<ion-content color="light">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Cargando información...</p>
+  </div>
+
+  <!-- Product Detail Content -->
+  <ion-grid *ngIf="!isLoading && product" class="product-container ion-no-padding">
+    <ion-row>
+      
+      <!-- Left Column: Gallery (Mitad) -->
+      <ion-col size="12" size-md="6" size-lg="6" class="gallery-col">
+        <div class="main-image-wrapper">
+          <ion-img [src]="selectedImage || product.imageUrl" [alt]="product.name"></ion-img>
+          
+          <div class="badges">
+            <span class="badge discount" *ngIf="discountPercent">-{{ discountPercent }}%</span>
+          </div>
+        </div>
+
+        <div class="gallery-thumbs" *ngIf="product.images && product.images.length > 1">
+          <div 
+            class="thumb" 
+            *ngFor="let img of product.images" 
+            [class.active]="selectedImage === img"
+            (click)="selectedImage = img">
+            <ion-img [src]="img"></ion-img>
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- Right Column: Info & Actions (Mitad) -->
+      <ion-col size="12" size-md="6" size-lg="6" class="info-col">
+        <div class="info-card">
+          
+          <h1 class="product-title">{{ product.name }}</h1>
+
+          <div class="rating-row" *ngIf="product.rating">
+            <div class="stars">
+              <ion-icon 
+                *ngFor="let star of getStars(product.rating)" 
+                [name]="star" 
+                color="warning">
+              </ion-icon>
+            </div>
+            <span class="rating-val">{{ product.rating }}</span>
+          </div>
+
+          <div class="price-block">
+            <span class="price-current">{{ product.price | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+            <span class="price-old" *ngIf="product.previousPrice">
+              {{ product.previousPrice | currency:'COP':'symbol-narrow':'1.0-0' }}
+            </span>
+          </div>
+
+          <div class="action-block">
+            <ion-button expand="block" shape="round" color="primary" class="main-btn" (click)="addToCart()">
+              <ion-icon name="cart-outline" slot="start"></ion-icon>
+              Agregar al Carrito
+            </ion-button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="description-block">
+            <h3>Descripción</h3>
+            <p>{{ product.description }}</p>
+          </div>
+
+          <div class="specs-block" *ngIf="product.features?.length">
+            <h3>Características</h3>
+            <ul>
+              <li *ngFor="let item of product.features">{{ item }}</li>
+            </ul>
+          </div>
+
+          <div class="warranty-block" *ngIf="product.warranty">
+            <h3>Garantía</h3>
+            <p class="warranty-text">
+              <ion-icon name="shield-checkmark-outline" class="icon-warranty"></ion-icon>
+              {{ product.warranty }}
+            </p>
+          </div>
+
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !product" class="empty-state">
+    <app-empty-state
+      title="Producto no encontrado"
+      description="No pudimos encontrar el producto que buscas."
+      icon="alert-circle-outline">
+    </app-empty-state>
+  </div>
+</ion-content>

@@ -7,4 +7,7 @@ export interface Product {
     rating?: number;
     description: string;
     imageUrl: string;
+    images?: string[];
+    features?: string[];
+    warranty?: string;
 }
