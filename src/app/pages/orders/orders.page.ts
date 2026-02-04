@@ -1,12 +1,61 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { Order } from '../../models/order.model';
 import { OrderService } from '../../core/services/order.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NavController, ModalController } from '@ionic/angular';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 
+/**
+ * **Página de Historial de Pedidos (OrdersPage)**
+ * 
+ * Muestra el listado completo de todos los pedidos del usuario ordenados por fecha (más recientes primero).
+ * 
+ * **Responsabilidades:**
+ * - Cargar pedidos desde OrderService.getOrders(userId)
+ * - Ordenar pedidos por fecha descendente (más nuevos primero)
+ * - Mostrar cada pedido con información resumida:
+ *   * ID corto (últimos 6 caracteres)
+ *   * Badge de estado (pending, synced, completed)
+ *   * Fecha formateada (MMM d, y, h:mm a)
+ *   * Cantidad de artículos
+ *   * Total en COP
+ * - Permitir ver detalle de cada pedido en modal (OrderDetailComponent)
+ * - Mostrar empty-state si no hay pedidos
+ * 
+ * **Flujo de navegación:**
+ * 1. Usuario llega desde CatalogPage (botón "Mis Pedidos")
+ * 2. Ve listado de pedidos o mensaje "Sin Pedidos"
+ * 3. Puede hacer clic en un pedido para ver detalle en modal
+ * 4. Puede volver al catálogo con botón "Volver" en header
+ * 
+ * **Estados de pedido:**
+ * - `pending` (amarillo/warning): Pedido guardado localmente, esperando sync con Firebase
+ * - `synced` (azul/primary): Pedido sincronizado exitosamente con Firebase
+ * - `completed` (verde/success): Pedido completado (estado final)
+ * 
+ * **Estrategia Offline-First:**
+ * - Los pedidos se cargan desde LocalStorage (SIEMPRE disponibles)
+ * - Si hay conexión, OrderService sincroniza automáticamente con Firebase
+ * - El usuario SIEMPRE ve sus pedidos aunque no tenga internet
+ * 
+ * **Memory leak prevention:**
+ * Implementa OnDestroy + takeUntil para cancelar la subscripción a orders$
+ * si el usuario navega antes de que termine la carga de pedidos.
+ * CRÍTICO porque orders$ es un Observable en tiempo real que puede seguir
+ * emitiendo valores aunque el componente ya no esté visible.
+ * 
+ * **Diseño visual:**
+ * - Cards con bordes redondeados (border-radius: 20px)
+ * - Animación de tap (transform: scale(0.97))
+ * - Badge moderno con box-shadow
+ * - Separación visual con borde punteado (border-top: 1px dashed)
+ * - Color total en primary (destacado)
+ * 
+ * @author Sistema Merpes
+ * @version 1.0.0
+ */
 @Component({
   selector: 'app-orders',
    template: `
@@ -160,8 +209,19 @@ import { OrderDetailComponent } from './order-detail/order-detail.component';
     }
   `]
 })
-export class OrdersPage implements OnInit {
+export class OrdersPage implements OnInit, OnDestroy {
+  /**
+   * Observable que emite el listado de pedidos del usuario.
+   * Ordenados por fecha descendente (más recientes primero).
+   */
   orders$: Observable<Order[]> | undefined;
+
+  /**
+   * Subject para implementar el patrón de limpieza de subscripciones.
+   * Se emite un valor en ngOnDestroy() para cancelar todas las subscripciones
+   * que usan takeUntil(destroy$).
+   */
+  private destroy$ = new Subject<void>();
 
   constructor(
     private orderService: OrderService,
@@ -170,17 +230,44 @@ export class OrdersPage implements OnInit {
     private modalCtrl: ModalController
   ) {}
 
+  /**
+   * Carga los pedidos del usuario al inicializar el componente.
+   * 
+   * **Flujo de carga:**
+   * 1. Obtener userId del usuario autenticado (o fallback '1')
+   * 2. Llamar a OrderService.getOrders(userId) que:
+   *    - Carga pedidos desde LocalStorage (sincrónico, siempre funciona)
+   *    - Intenta cargar desde Firebase si hay conexión
+   *    - Devuelve Observable<Order[]> con los pedidos
+   * 3. Ordenar pedidos por fecha descendente (más nuevos primero)
+   * 4. Asignar a orders$ para que el template lo renderice con async pipe
+   * 
+   * **Memory leak prevention:**
+   * Usa takeUntil(destroy$) para cancelar la subscripción si el usuario
+   * navega antes de que termine la carga.
+   */
   ngOnInit() {
      const userId = this.auth.currentUserValue?.uid || '1';
      this.orders$ = this.orderService.getOrders(userId).pipe(
+         takeUntil(this.destroy$), // Cancelar si el componente se destruye
          map(orders => orders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()))
      );
   }
 
+  /**
+   * Navega de vuelta al catálogo de productos.
+   * Usa navigateBack para mantener el historial de navegación.
+   */
   goToCatalog() {
       this.nav.navigateBack('/catalog');
   }
 
+  /**
+   * Devuelve el color del badge según el estado del pedido.
+   * 
+   * @param status Estado del pedido ('completed', 'synced', 'pending')
+   * @returns Color de Ionic ('success', 'primary', 'warning', 'medium')
+   */
   getStatusColor(status: string): string {
       switch(status) {
           case 'completed': return 'success';
@@ -190,6 +277,12 @@ export class OrdersPage implements OnInit {
       }
   }
 
+  /**
+   * Devuelve la etiqueta en español del estado del pedido.
+   * 
+   * @param status Estado del pedido en inglés
+   * @returns Etiqueta traducida al español
+   */
   getStatusLabel(status: string): string {
      switch(status) {
         case 'completed': return 'Completado';
@@ -199,19 +292,67 @@ export class OrdersPage implements OnInit {
      }
   }
 
+  /**
+   * Calcula el total de artículos en un pedido.
+   * Suma las cantidades de todos los items.
+   * 
+   * @param order Pedido del cual calcular la cantidad total de artículos
+   * @returns Suma de las cantidades de todos los items
+   * 
+   * @example
+   * // Pedido con 3 items: [qty: 2, qty: 1, qty: 3]
+   * getItemsCount(order) // => 6
+   */
   getItemsCount(order: Order): number {
       return order.items.reduce((acc, item) => acc + item.quantity, 0);
   }
 
+  /**
+   * Devuelve los últimos 6 caracteres del ID del pedido.
+   * Útil para mostrar IDs más cortos en la UI sin perder unicidad.
+   * 
+   * @param id ID completo del pedido (timestamp en string)
+   * @returns Últimos 6 caracteres o el ID completo si es menor a 6
+   * 
+   * @example
+   * getShortId('1736352000123') // => '000123'
+   * getShortId('abc')           // => 'abc'
+   */
   getShortId(id: string): string {
       return id && id.length > 6 ? id.slice(-6) : id;
   }
 
+  /**
+   * Abre un modal con el detalle completo del pedido seleccionado.
+   * 
+   * **Flujo del modal:**
+   * 1. Crear modal con OrderDetailComponent
+   * 2. Pasar el pedido como componentProps
+   * 3. Presentar el modal (animación de slide-up)
+   * 4. Esperar a que el usuario cierre el modal
+   * 
+   * **Contenido del modal:**
+   * - Lista completa de items con imágenes y cantidades
+   * - Subtotales por item
+   * - Total del pedido
+   * - Fecha y estado del pedido
+   * 
+   * @param order Pedido del cual mostrar el detalle
+   */
   async viewDetail(order: Order) {
       const modal = await this.modalCtrl.create({
           component: OrderDetailComponent,
           componentProps: { order }
       });
       await modal.present();
+  }
+
+  /**
+   * Hook de destrucción que limpia las subscripciones.
+   * Cancela la subscripción a orders$ si el usuario navega antes de completar.
+   */
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
