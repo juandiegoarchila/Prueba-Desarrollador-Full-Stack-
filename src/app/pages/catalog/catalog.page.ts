@@ -30,27 +30,10 @@ import { AuthService } from '../../core/services/auth.service';
         <ion-grid class="ion-no-padding" *ngIf="products.length > 0; else empty">
           <ion-row>
             <ion-col size="12" size-md="6" size-lg="4" *ngFor="let p of products">
-              <ion-card class="product-card shadow-card mode-ios">
-                <div class="image-wrapper">
-                  <img [src]="p.imageUrl" [alt]="p.name" loading="lazy" />
-                  <div class="price-badge">
-                    {{ p.price | currency:'COP':'symbol':'1.0-0' }}
-                  </div>
-                </div>
-
-                <ion-card-content>
-                  <div class="card-info">
-                    <h3 class="product-title text-semibold">{{ p.name }}</h3>
-                    <p class="product-desc text-small">{{ p.description }}</p>
-                  </div>
-
-                  <ion-button expand="block" shape="round" color="primary" 
-                    (click)="addToCart(p)" class="ion-no-margin add-btn">
-                    <ion-icon name="cart-outline" slot="start"></ion-icon>
-                    Agregar
-                  </ion-button>
-                </ion-card-content>
-              </ion-card>
+              <app-product-card 
+                [product]="p" 
+                (add)="addToCart($event)">
+              </app-product-card>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -91,61 +74,6 @@ import { AuthService } from '../../core/services/auth.service';
         align-items: center;
         justify-content: center;
         min-height: 300px;
-    }
-    .product-card {
-      background: white;
-      margin: 0 0 20px 0;
-      border-radius: 16px;
-      overflow: visible;
-    }
-    .image-wrapper {
-      position: relative;
-      border-radius: 16px 16px 0 0;
-      overflow: hidden;
-      height: 180px;
-    }
-    .image-wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-    .price-badge {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-weight: 700;
-      color: var(--ion-color-tertiary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      font-size: 0.9rem;
-    }
-    ion-card-content {
-      padding: 16px;
-    }
-    .card-info {
-      min-height: 80px;
-    }
-    .product-title {
-      font-size: 1.1rem;
-      color: var(--ion-color-tertiary);
-      margin: 0 0 4px;
-    }
-    .product-desc {
-      color: var(--ion-color-medium);
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin: 0 0 16px;
-      line-height: 1.4;
-    }
-    .add-btn {
-      --box-shadow: none;
-      height: 44px;
-      font-weight: 600;
     }
   `]
 })
