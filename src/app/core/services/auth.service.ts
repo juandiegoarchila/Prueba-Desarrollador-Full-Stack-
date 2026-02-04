@@ -1,5 +1,6 @@
 import { Injectable, Inject, Injector } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { User } from '../../models/user.model';
 import { AuthRepository } from '../repositories/auth.repository';
 import { LocalAuthRepository } from '../repositories/local/local-auth.repository';
@@ -13,10 +14,13 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   
+  // Nuevo: Flag para saber si Firebase ya respondió al menos una vez
+  private authStateReadySubject = new BehaviorSubject<boolean>(false);
+  public authStateReady$ = this.authStateReadySubject.asObservable();
+
   private repository: AuthRepository;
 
   constructor(private injector: Injector) {
-      // Manual factory pattern for simplicity in this context
       if (environment.useFirebase) {
           this.repository = this.injector.get(FirebaseAuthRepository);
       } else {
@@ -29,6 +33,7 @@ export class AuthService {
   private checkSession() {
       this.repository.getCurrentUser().subscribe(user => {
           this.currentUserSubject.next(user);
+          this.authStateReadySubject.next(true); // Ya sabemos el estado (sea user o null)
       });
   }
 
@@ -37,6 +42,7 @@ export class AuthService {
       obs.subscribe(user => this.currentUserSubject.next(user));
       return obs;
   }
+
 
   register(name: string, email: string, pass: string): Observable<User> {
       const obs = this.repository.register(name, email, pass);
