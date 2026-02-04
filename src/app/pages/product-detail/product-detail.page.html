@@ -95,6 +95,20 @@
     </ion-row>
   </ion-grid>
 
+  <!-- Related Products -->
+  <div class="related-section" *ngIf="!isLoading && relatedProducts.length > 0">
+    <div class="product-container">
+      <h3 class="related-title">Otros productos disponibles</h3>
+      <ion-grid class="ion-no-padding">
+        <ion-row>
+          <ion-col size="6" size-md="4" size-lg="3" *ngFor="let rel of relatedProducts">
+            <app-product-card [product]="rel"></app-product-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+
   <!-- Empty State -->
   <div *ngIf="!isLoading && !product" class="empty-state">
     <app-empty-state

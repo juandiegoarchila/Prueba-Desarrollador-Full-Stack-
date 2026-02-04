@@ -14,10 +14,9 @@
   
   @media (min-width: 768px) {
     padding: 30px;
-    height: calc(100vh - 56px); // approx header height
-    overflow-y: hidden; // Prevent column scroll, handle inside
+    // Removed fixed height to avoid double scrollbar
     position: sticky;
-    top: 0;
+    top: 56px; // Offset by header height
     
     // Layout horizontal para desktop: Thumbs | Imagen
     flex-direction: row;
@@ -163,8 +162,7 @@
 
   @media (min-width: 768px) {
     padding: 30px;
-    overflow-y: auto;
-    height: calc(100vh - 56px);
+    // Removed height/overflow to fix double scrollbar
   }
 }
 
@@ -307,4 +305,31 @@ h3 {
   padding: 2px 6px;
   min-width: 18px;
   z-index: 10;
+}
+
+// Related Products
+.related-section {
+  background: #f8f9fa;
+  padding: 40px 0 60px;
+  margin-top: 40px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+
+  .product-container {
+    padding: 0 16px; // Ensure padding on mobile
+    @media (min-width: 768px) {
+      padding: 0;
+    }
+  }
+
+  ion-col {
+    padding: 10px; // Add specific padding for related cards
+  }
+}
+
+.related-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+  margin-bottom: 24px;
+  margin-top: 0;
 }

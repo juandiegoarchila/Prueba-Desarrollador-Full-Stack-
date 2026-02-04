@@ -8,7 +8,7 @@ import { getDiscountPercent } from '../../utils/price.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ion-card class="product-card shadow-card mode-ios">
-      <div class="image-wrapper">
+      <div class="image-wrapper clickable" [routerLink]="['/product', product.id]">
         <ion-img [src]="product.imageUrl" [alt]="product.name"></ion-img>
         <div class="discount-badge" *ngIf="getDiscountPercent(product) as discount">
           -{{ discount }}%
@@ -16,7 +16,7 @@ import { getDiscountPercent } from '../../utils/price.util';
       </div>
       
       <ion-card-content>
-        <div class="card-info">
+        <div class="card-info clickable" [routerLink]="['/product', product.id]">
             <h3 class="product-title text-semibold">{{ product.name }}</h3>
         </div>
 
@@ -51,7 +51,12 @@ import { getDiscountPercent } from '../../utils/price.util';
         </ion-button>
       </ion-card-content>
     </ion-card>
-  `
+  `,
+  styles: [`
+    .clickable {
+      cursor: pointer;
+    }
+  `]
 })
 export class ProductCardComponent {
   @Input() product!: Product;

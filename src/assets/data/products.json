@@ -31,8 +31,28 @@
     "price": 760900,
     "previousPrice": 1011900,
     "rating": 4.4,
-    "description": "Televisor HD de 32\" con colores vivos y gran nitidez.",
-    "imageUrl": "assets/img/products/tv-samsung-32.png"
+    "description": "Función One Remote: Maneja la interfaz de tu Smart TV y controla todos tus dispositivos como consolas de videojuegos, dispositivos de audio, decodificadores de TV y demás que estén conectados al televisor desde un único control remoto. Alto Rango Dinámico HDR: La tecnología de Alto Rango Dinámico (HDR) optimiza la regulación de brillo del televisor para que puedas disfrutar de un inmenso espectro de colores y detalles visuales, incluso en las escenas más oscuras. PurColor: Con la tecnología PurColor, puedes sentir tan cerca los contenidos de tu televisor casi como si estuvieras en la escena. Visión ultranítida: Ofrece imágenes de alta calidad con menor distorsión utilizando un algoritmo avanzado. Acceso remoto: Haz el trabajo de la oficina en casa con tu televisor. Potenciador de contraste: Hace que tus imágenes se vean mucho más vivas y reales al ajustar el contraste en las escenas permitiéndote ver una calidad de imagen espectacular con mayor profundidad.",
+    "imageUrl": "assets/img/products/tv-samsung-32.png",
+    "images": [
+      "assets/img/products/tv-samsung-32.png",
+      "assets/img/products/televiso 2.jpg",
+      "assets/img/products/televiso 3.jpg"
+    ],
+    "features": [
+      "Pantalla: 81 cm",
+      "Tamaño de pantalla: 32 Pulgadas",
+      "Tipo de pantalla: Led",
+      "Resolución de pantalla: HD",
+      "Diseño de pantalla: Plano",
+      "Smart tv: Si",
+      "Sistema Operativo: Tizen",
+      "Puertos HDMI: 2",
+      "Puertos USB: 1",
+      "Tonalidad de color: Negro",
+      "Control generico",
+      "Potencia de audio: 10W"
+    ],
+    "warranty": "Garantía de 1 año directamente con la marca por defectos de fabrica y daños internos."
   },
   {
     "id": 3,
@@ -40,7 +60,25 @@
     "price": 879748,
     "previousPrice": 1169664,
     "rating": 4.5,
-    "description": "Portátil de 14\" ideal para trabajo diario y estudio.",
-    "imageUrl": "assets/img/products/portatil-lenovo-14.png"
+    "description": "Sube la vara de lo que se puede esperar de una laptop accesible con la IdeaPad 1i 7 ma Gen (14″, Intel). Navega, explora y conéctate con confianza con los confiables procesadores Intel® y las funciones inteligentes que mejoran el flujo de trabajo. Y con un diseño extraordinariamente delgado, este dispositivo es un compañero digital de gran movilidad. Algunos puertos/ranuras pueden ser opcionales o variar – colores sujetos a disponibilidad. Todo lo que necesitas, donde sea que vayas La laptop IdeaPad 1i 7 ma Gen (14”, Intel) es exactamente lo que se necesita en un portátil de uso diario. Mira programas en una pantalla hasta FHD de 14″ con un marco muy delgado. Escucha un sonido rico y claro gracias a los dos altavoces Dolby Audio™.",
+    "imageUrl": "assets/img/products/portatil-lenovo-14.png",
+    "images": [
+      "assets/img/products/portatil-lenovo-14.png",
+      "assets/img/products/portatil 2.jpg",
+      "assets/img/products/portatil 3.jpg"
+    ],
+    "features": [
+      "Procesador: Intel Celeron N4020 2C, 1.1 GHz, 4 MB",
+      "Pantalla: 14 Pulgadas resolución HD (1366x768) TN 220 nits Anti Glare",
+      "Memoria: 4 GB DDR4 2400 Soldada",
+      "Almacenamiento: Estado Sólido 128 GB SSD M.2 2242 PCIe 3.0x4 NVMe",
+      "Gráficos: Integrados Intel UHD Graphics 600",
+      "Sistema Operativo: Windows 11",
+      "Puertos: 1x USB 2.0, 1x USB 3.2 Gen 1, 1x USB-C® 3.2",
+      "HDMI® 1.4b, Card reader, Headphone / microphone combo jack",
+      "Conectividad: Wifi 11ac 2x2 + BT5.0",
+      "Cámara: HD 720P"
+    ],
+    "warranty": "Garantía de 12 meses por defectos de fábrica y/o daños internos directamente con la marca."
   }
 ]

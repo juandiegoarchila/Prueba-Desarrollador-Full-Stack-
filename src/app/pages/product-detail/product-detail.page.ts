@@ -15,6 +15,7 @@ import { NotificationService } from '../../core/services/notification.service';
 })
 export class ProductDetailPage implements OnInit {
   product: Product | null = null;
+  relatedProducts: Product[] = [];
   isLoading = true;
   discountPercent: number | null = null;
   selectedImage: string | null = null;
@@ -33,32 +34,44 @@ export class ProductDetailPage implements OnInit {
   getStars = getStars;
 
   ngOnInit() {
-    const productId = Number(this.route.snapshot.paramMap.get('id'));
+    this.route.paramMap.subscribe(params => {
+      const productId = Number(params.get('id'));
 
-    if (!productId) {
-      this.isLoading = false;
-      return;
-    }
-
-    this.productService.getProductById(productId).subscribe({
-      next: (product) => {
-        this.product = product;
-        this.discountPercent = product
-          ? getDiscountPercent(product.price, product.previousPrice)
-          : null;
-        
-        // Initialize selected image
-        if (this.product && this.product.images?.length) {
-          this.selectedImage = this.product.images[0];
-        } else if (this.product) {
-          this.selectedImage = this.product.imageUrl;
-        }
-
+      if (!productId) {
         this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
+        return;
       }
+
+      this.isLoading = true;
+      this.selectedImage = null;
+
+      this.productService.getProductById(productId).subscribe({
+        next: (product) => {
+          this.product = product;
+          this.discountPercent = product
+            ? getDiscountPercent(product.price, product.previousPrice)
+            : null;
+          
+          // Initialize selected image
+          if (this.product && this.product.images?.length) {
+            this.selectedImage = this.product.images[0];
+          } else if (this.product) {
+            this.selectedImage = this.product.imageUrl;
+          }
+
+          this.isLoading = false;
+
+          // Load related products
+          if (this.product) {
+            this.productService.getRelatedProducts(this.product.id).subscribe(related => {
+              this.relatedProducts = related;
+            });
+          }
+        },
+        error: () => {
+          this.isLoading = false;
+        }
+      });
     });
   }
 

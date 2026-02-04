@@ -50,8 +50,21 @@ export class ProductService {
             "price": 760900,
             "previousPrice": 1011900,
             "rating": 4.4,
-            "description": "Televisor HD de 32\" con colores vivos y gran nitidez.",
-            "imageUrl": "assets/img/products/tv-samsung-32.png"
+            "description": "Función One Remote: Maneja la interfaz de tu Smart TV y controla todos tus dispositivos. Alto Rango Dinámico HDR: La tecnología de Alto Rango Dinámico (HDR) optimiza la regulación de brillo. PurColor: Con la tecnología PurColor, puedes sentir tan cerca los contenidos. Visión ultranítida: Ofrece imágenes de alta calidad con menor distorsión. Acceso remoto: Haz el trabajo de la oficina en casa con tu televisor. Potenciador de contraste: Hace que tus imágenes se vean mucho más vivas.",
+            "imageUrl": "assets/img/products/tv-samsung-32.png",
+            "images": [
+              "assets/img/products/tv-samsung-32.png",
+              "assets/img/products/televiso 2.jpg",
+              "assets/img/products/televiso 3.jpg"
+            ],
+            "features": [
+              "Pantalla: 81 cm (32 Pulgadas)",
+              "Resolución: HD Led",
+              "Smart tv: Si, Tizen",
+              "Audio: 10W",
+              "Entradas: 2 HDMI, 1 USB"
+            ],
+            "warranty": "Garantía de 1 año directamente con la marca."
           },
           {
             "id": 3,
@@ -59,8 +72,21 @@ export class ProductService {
             "price": 879748,
             "previousPrice": 1169664,
             "rating": 4.5,
-            "description": "Portátil de 14\" ideal para trabajo diario y estudio.",
-            "imageUrl": "assets/img/products/portatil-lenovo-14.png"
+            "description": "Sube la vara de lo que se puede esperar de una laptop accesible con la IdeaPad 1i 7 ma Gen. Navega, explora y conéctate con confianza. Diseño extraordinariamente delgado. Pantalla hasta FHD de 14″ con un marco muy delgado. Sonido rico y claro Dolby Audio™.",
+            "imageUrl": "assets/img/products/portatil-lenovo-14.png",
+            "images": [
+              "assets/img/products/portatil-lenovo-14.png",
+              "assets/img/products/portatil 2.jpg",
+              "assets/img/products/portatil 3.jpg"
+            ],
+            "features": [
+              "Procesador: Intel Celeron N4020",
+              "Pantalla: 14\" HD (1366x768)",
+              "Memoria: 4 GB DDR4",
+              "Disco: 128 GB SSD",
+              "OS: Windows 11"
+            ],
+            "warranty": "Garantía de 12 meses directamente con la marca."
           }
         ]);
       })
@@ -70,6 +96,12 @@ export class ProductService {
   getProductById(productId: number): Observable<Product | null> {
     return this.getProducts().pipe(
       map(products => products.find(product => product.id === productId) ?? null)
+    );
+  }
+
+  getRelatedProducts(currentId: number): Observable<Product[]> {
+    return this.getProducts().pipe(
+      map(products => products.filter(product => product.id !== currentId))
     );
   }
 }
