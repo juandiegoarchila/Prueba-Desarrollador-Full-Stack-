@@ -69,4 +69,20 @@ export class LocalAuthRepository implements AuthRepository {
           });
       });
   }
+
+  resetPassword(email: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        // Simulación: Verificar si el correo existe en la "base de datos" local
+        this.storage.get(this.USERS_DB_KEY).then(users => {
+            const user = (users || []).find((u: any) => u.email === email);
+            if (user) {
+                // Simular éxito
+                console.log(`[LocalAuth] Email de restablecimiento enviado a ${email}`);
+                resolve();
+            } else {
+                reject(new Error('No se encontró una cuenta con este correo electrónico.'));
+            }
+        });
+    });
+  }
 }

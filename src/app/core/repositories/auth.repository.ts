@@ -6,4 +6,5 @@ export interface AuthRepository {
     register(name: string, email: string, password: string): Observable<User>;
     logout(): Promise<void>;
     getCurrentUser(): Observable<User | null>;
+    resetPassword(email: string): Promise<void>;
 }

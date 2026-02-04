@@ -3,7 +3,7 @@ import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthRepository } from '../auth.repository';
 import { User as AppUser } from '../../../models/user.model';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, UserCredential } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, UserCredential, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { environment } from 'src/environments/environment';
 
@@ -63,5 +63,9 @@ export class FirebaseAuthRepository implements AuthRepository {
               }
           });
       });
+  }
+
+  resetPassword(email: string): Promise<void> {
+      return sendPasswordResetEmail(this.auth, email);
   }
 }

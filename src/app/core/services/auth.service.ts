@@ -49,6 +49,10 @@ export class AuthService {
       this.currentUserSubject.next(null);
   }
 
+  resetPassword(email: string): Promise<void> {
+      return this.repository.resetPassword(email);
+  }
+
   isAuthenticated(): boolean {
       return this.currentUserSubject.value !== null;
   }
