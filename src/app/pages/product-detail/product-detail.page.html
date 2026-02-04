@@ -1,4 +1,9 @@
-<app-header title="Detalle" [backButton]="true"></app-header>
+<app-header title="Detalle" [backButton]="true">
+  <ion-button routerLink="/cart" fill="clear" color="light">
+    <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+    <ion-badge *ngIf="(cartItemCount$ | async) as count" class="header-badge" color="danger">{{ count }}</ion-badge>
+  </ion-button>
+</app-header>
 
 <ion-content color="light">
   <!-- Loading State -->

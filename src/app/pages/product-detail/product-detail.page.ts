@@ -19,6 +19,9 @@ export class ProductDetailPage implements OnInit {
   discountPercent: number | null = null;
   selectedImage: string | null = null;
 
+  // Expose cart count for key in template
+  cartItemCount$ = this.cartService.itemCount$;
+
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
@@ -65,6 +68,6 @@ export class ProductDetailPage implements OnInit {
     }
     this.cartService.addToCart(this.product);
     this.notify.showSuccess(`Agregaste ${this.product.name} al carrito`);
-    this.nav.navigateForward('/cart');
+    // No navegar al carrito automáticamente para permitir seguir comprando
   }
 }
