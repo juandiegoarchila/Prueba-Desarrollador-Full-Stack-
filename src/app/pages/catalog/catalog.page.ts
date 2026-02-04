@@ -3,6 +3,7 @@ import { NavController } from '@ionic/angular';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
+import { OrderService } from '../../core/services/order.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -10,6 +11,10 @@ import { AuthService } from '../../core/services/auth.service';
   selector: 'app-catalog',
   template: `
     <app-header title="Catálogo">
+        <ion-button routerLink="/orders" class="notification-btn">
+            <ion-icon name="receipt-outline" slot="icon-only"></ion-icon>
+            <span class="badge badge-orders" *ngIf="(pendingOrders$ | async) as count">{{ count > 0 ? count : '' }}</span>
+        </ion-button>
         <ion-button routerLink="/cart" class="notification-btn">
             <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
             <span class="badge" *ngIf="(cartCount$ | async) as count">{{ count > 0 ? count : '' }}</span>
@@ -66,6 +71,17 @@ import { AuthService } from '../../core/services/auth.service';
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 10;
+        border: 2px solid var(--ion-color-primary);
+    }
+    .badge-orders {
+        background: var(--ion-color-tertiary);
+        animation: pulse-animation 2s infinite;
+    }
+    @keyframes pulse-animation {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+        100% { transform: scale(1); }
     }
     .centered-loader {
         height: 100%;
@@ -92,10 +108,12 @@ export class CatalogPage implements OnInit {
   products: Product[] = [];
   isLoading = true;
   cartCount$ = this.cartService.itemCount$; 
+  pendingOrders$ = this.orderService.pendingCount$;
 
   constructor(
     private productService: ProductService, 
     private cartService: CartService,
+    private orderService: OrderService,
     private notify: NotificationService,
     private auth: AuthService,
     private nav: NavController

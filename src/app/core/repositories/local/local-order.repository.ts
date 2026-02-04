@@ -14,23 +14,35 @@ export class LocalOrderRepository implements OrderRepository {
 
   createOrder(order: Order): Observable<Order> {
     return new Observable(observer => {
-        this.storage.get(this.ORDERS_KEY).then(orders => {
-            const currentOrders = orders || [];
-            currentOrders.push(order);
-            this.storage.set(this.ORDERS_KEY, currentOrders);
-            observer.next(order);
-            observer.complete();
-        });
+      const run = async () => {
+        try {
+          const orders = await this.storage.get(this.ORDERS_KEY);
+          const currentOrders = orders || [];
+          currentOrders.push(order);
+          await this.storage.set(this.ORDERS_KEY, currentOrders);
+          observer.next(order);
+          observer.complete();
+        } catch (err) {
+          observer.error(err);
+        }
+      };
+      run();
     });
   }
 
   getOrders(userId: string): Observable<Order[]> {
     return new Observable(observer => {
-        this.storage.get(this.ORDERS_KEY).then(orders => {
-            const userOrders = (orders || []).filter((o: Order) => o.userId === userId);
-            observer.next(userOrders);
-            observer.complete();
-        });
+      const run = async () => {
+        try {
+          const orders = await this.storage.get(this.ORDERS_KEY);
+          const userOrders = (orders || []).filter((o: Order) => o.userId === userId);
+          observer.next(userOrders);
+          observer.complete();
+        } catch (err) {
+          observer.error(err);
+        }
+      };
+      run();
     });
   }
 

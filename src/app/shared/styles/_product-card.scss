@@ -20,6 +20,11 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
+
+  @media (max-width: 576px) {
+    height: 140px;
+    padding: 8px;
+  }
 }
 
 .product-card .image-wrapper img,
@@ -47,6 +52,13 @@
   font-size: 0.8rem;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
   z-index: 1;
+
+  @media (max-width: 576px) {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    top: 6px;
+    left: 6px;
+  }
 }
 
 .product-card ion-card-content {
@@ -54,10 +66,18 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+
+  @media (max-width: 576px) {
+    padding: 10px;
+  }
 }
 
 .product-card .card-info {
   min-height: 72px;
+
+  @media (max-width: 576px) {
+    min-height: 48px;
+  }
 }
 
 .product-card .product-title {
@@ -66,6 +86,11 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 52px;
+
+  @media (max-width: 576px) {
+    font-size: 0.95rem;
+    min-height: 38px;
+  }
 }
 
 .product-card .product-title {
@@ -82,6 +107,12 @@
   margin: 0 0 12px;
   font-weight: 600;
   font-size: 0.85rem;
+  text-transform: uppercase;
+
+  @media (max-width: 576px) {
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+  }
 }
 
 .product-card .price-row {
@@ -90,12 +121,24 @@
   gap: 10px;
   margin-bottom: 14px;
   min-height: 28px;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 8px;
+    min-height: auto;
+  }
 }
 
 .product-card .current-price {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--ion-color-tertiary);
+
+  @media (max-width: 576px) {
+    font-size: 1rem;
+  }
 }
 
 .product-card .previous-price {
@@ -105,6 +148,10 @@
   text-decoration-thickness: 2px;
   text-decoration-color: rgba(122, 134, 153, 0.9);
   font-weight: 600;
+
+  @media (max-width: 576px) {
+    font-size: 0.8rem;
+  }
 }
 
 .product-card .rating-row {
@@ -113,17 +160,30 @@
   gap: 6px;
   margin-bottom: 14px;
   min-height: 20px;
+
+  @media (max-width: 576px) {
+    gap: 2px;
+    margin-bottom: 10px;
+  }
 }
 
 .product-card .rating-star {
   font-size: 16px;
   color: #f1c40f;
+
+  @media (max-width: 576px) {
+    font-size: 10px;
+  }
 }
 
 .product-card .rating-value {
   font-size: 0.85rem;
   color: var(--ion-color-medium);
   font-weight: 600;
+
+  @media (max-width: 576px) {
+    font-size: 0.75rem;
+  }
 }
 
 .product-card .add-btn {
@@ -133,4 +193,9 @@
   font-weight: 700;
   letter-spacing: 0.4px;
   margin-top: auto;
+
+  @media (max-width: 576px) {
+    height: 36px;
+    font-size: 0.8rem;
+  }
 }

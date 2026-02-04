@@ -12,6 +12,26 @@ import { ModalController } from '@ionic/angular';
       <h2 class="text-bold ion-text-center">{{ title }}</h2>
       <p class="text-medium text-muted ion-text-center">{{ message }}</p>
       
+      <div *ngIf="total > 0" class="order-summary-box">
+             <div class="summary-line">
+                <span>Subtotal (Base)</span>
+                <span>{{ total / 1.19 | currency:'COP':'symbol':'1.0-0' }}</span>
+             </div>
+             <div class="summary-line">
+                <span>IVA (19%)</span>
+                <span>{{ total - (total / 1.19) | currency:'COP':'symbol':'1.0-0' }}</span>
+             </div>
+             <div class="summary-line">
+                <span>Envío</span>
+                <span class="free-text">Gratis</span>
+             </div>
+             <div class="separator"></div>
+             <div class="total-line">
+                <span>Total a pagar:</span>
+                <span class="total-val">{{ total | currency:'COP':'symbol':'1.0-0' }}</span>
+             </div>
+      </div>
+
       <div class="actions">
         <ion-button expand="block" fill="outline" color="medium" (click)="cancel()" class="action-btn">
           Cancelar
@@ -34,7 +54,31 @@ import { ModalController } from '@ionic/angular';
         margin-bottom: 10px;
     }
     h2 { margin: 0 0 10px; color: var(--ion-color-tertiary); }
-    p { margin: 0 0 30px; line-height: 1.5; }
+    p { margin: 0 0 20px; line-height: 1.5; }
+
+    .order-summary-box {
+        width: 100%;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+    }
+    .summary-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-size: 13px;
+        color: #6c757d;
+    }
+    .free-text { color: var(--ion-color-success); font-weight: 700; }
+    .separator { height: 1px; background: #dee2e6; margin: 8px 0; }
+    .total-line {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
+        color: var(--ion-color-dark);
+        font-size: 15px;
+    }
     
     .actions {
       display: grid;
@@ -48,6 +92,7 @@ import { ModalController } from '@ionic/angular';
 export class ConfirmationModalComponent {
   @Input() title: string = 'Confirmación';
   @Input() message: string = '¿Estás seguro de realizar esta acción?';
+  @Input() total: number = 0;
 
   constructor(private modalCtrl: ModalController) {}
 

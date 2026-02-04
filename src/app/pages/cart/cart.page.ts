@@ -5,7 +5,7 @@ import { CartService } from '../../core/services/cart.service';
 import { AuthService } from '../../core/services/auth.service';
 import { OrderService } from '../../core/services/order.service';
 import { NotificationService } from '../../core/services/notification.service';
-import { NavController, ModalController } from '@ionic/angular';
+import { NavController, ModalController, LoadingController } from '@ionic/angular';
 import { ConfirmationModalComponent } from '../../shared/components/confirmation-modal/confirmation-modal.component';
 import { Order } from '../../models/order.model';
 
@@ -13,8 +13,9 @@ import { Order } from '../../models/order.model';
   selector: 'app-cart',
   template: `
     <app-header title="Tu Carrito" [backButton]="true">
-        <ion-button (click)="confirmClear()" color="danger" *ngIf="(cartItems$ | async)?.length">
-            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        <ion-button (click)="goToCatalog()" fill="clear" color="light">
+            <ion-icon name="arrow-back-circle-outline" slot="start"></ion-icon>
+            Volver
         </ion-button>
     </app-header>
 
@@ -31,24 +32,25 @@ import { Order } from '../../models/order.model';
                   <img [src]="item.product.imageUrl">
                 </ion-thumbnail>
                 
-                <ion-label>
-                  <h3 class="text-semibold text-dark">{{ item.product.name }}</h3>
-                  <p class="price-text">{{ item.product.price | currency:'COP':'symbol':'1.0-0' }}</p>
+                <ion-label class="ion-text-wrap">
+                  <div class="header-flex">
+                      <h3 class="text-bold text-dark product-name">{{ item.product.name }}</h3>
+                      <span class="text-bold text-dark item-price">{{ item.total | currency:'COP':'symbol':'1.0-0' }}</span>
+                  </div>
                   
                   <div class="stepper">
-                    <ion-button size="small" fill="outline" color="medium" (click)="updateQty(item.product.id, item.quantity - 1)">
+                    <ion-button size="small" fill="outline" color="medium" class="stepper-btn" (click)="updateQty(item.product.id, item.quantity - 1)">
                         <ion-icon name="remove" slot="icon-only"></ion-icon>
                     </ion-button>
                     <span class="qty-label">{{ item.quantity }}</span>
-                    <ion-button size="small" fill="outline" color="medium" (click)="updateQty(item.product.id, item.quantity + 1)">
+                    <ion-button size="small" fill="outline" color="medium" class="stepper-btn" (click)="updateQty(item.product.id, item.quantity + 1)">
                         <ion-icon name="add" slot="icon-only"></ion-icon>
+                    </ion-button>
+                    <ion-button size="small" fill="clear" color="danger" class="trash-btn" (click)="removeItem(item.product.id)">
+                        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
                     </ion-button>
                   </div>
                 </ion-label>
-                
-                <div slot="end" class="total-column">
-                  <span class="text-bold text-dark">{{ item.total | currency:'COP':'symbol':'1.0-0' }}</span>
-                </div>
               </ion-item>
 
               <ion-item-options side="end">
@@ -76,6 +78,24 @@ import { Order } from '../../models/order.model';
 
     <ion-footer *ngIf="(total$ | async) as total" class="ion-no-border shadow-card">
        <div *ngIf="total > 0" class="footer-container">
+          
+          <div class="order-summary">
+             <div class="summary-row">
+                <span>Subtotal (Base)</span>
+                <span>{{ total / 1.19 | currency:'COP':'symbol':'1.0-0' }}</span>
+             </div>
+             <div class="summary-row">
+                <span>IVA (19%)</span>
+                <span>{{ total - (total / 1.19) | currency:'COP':'symbol':'1.0-0' }}</span>
+             </div>
+             <div class="summary-row">
+                <span>Envío</span>
+                <span class="free-badge">Gratis</span>
+             </div>
+          </div>
+
+          <div class="divider"></div>
+
           <div class="total-row">
               <span class="text-medium text-muted">Total a pagar:</span>
               <span class="text-bold text-large">{{ total | currency:'COP':'symbol':'1.0-0' }}</span>
@@ -99,38 +119,77 @@ import { Order } from '../../models/order.model';
     .item-inner { --background: white; --inner-padding-end: 10px; }
     .rounded-thumb { --border-radius: 10px; }
     .text-dark { color: var(--ion-color-tertiary); }
-    .price-text { color: var(--ion-color-primary); font-weight: 500; }
+    .text-bold { font-weight: 800; }
+    
+    .header-flex {
+        display: flex;
+        flex-wrap: wrap; /* Clave: permite que baje si no cabe */
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    .product-name {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.25;
+        flex: 1 1 140px; /* Crece, se encoge, base 140px */
+    }
+    .item-price {
+        font-size: 15px;
+        color: var(--ion-color-tertiary);
+        white-space: nowrap; /* No rompe la línea del precio */
+    }
     
     .stepper {
         display: flex;
         align-items: center;
         margin-top: 8px;
-        gap: 10px;
+        gap: 5px;
     }
-    .qty-label { font-weight: 600; min-width: 20px; text-align: center; }
+    .qty-label { font-weight: 600; min-width: 20px; text-align: center; font-size: 14px; }
+    .stepper-btn { 
+        height: 28px; 
+        --padding-start: 4px; 
+        --padding-end: 4px; 
+        min-width: 32px;
+        margin: 0;
+    }
+    .trash-btn {
+        height: 28px;
+        width: 30px;
+        --padding-start: 0; 
+        --padding-end: 0;
+        margin-left: 5px;
+    }
     
-    .total-column {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: center;
-        height: 100%;
-    }
+    .total-column { display: none; }
     
     .footer-container {
         background: white;
-        padding: 20px 20px 30px; /* Safe area bottom */
+        padding: 12px 16px 20px; /* Reducido para compactar */
         box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
         border-radius: 20px 20px 0 0;
     }
+    .order-summary { margin-bottom: 5px; }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2px;
+        font-size: 13px; /* Letra más pequeña */
+        color: var(--ion-color-medium);
+    }
+    .free-badge { color: var(--ion-color-success); font-weight: 700; }
+    .divider { height: 1px; background: #f0f0f0; margin: 8px 0 12px; }
+
     .total-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
     }
-    .text-large { font-size: 1.4rem; color: var(--ion-color-tertiary); }
-    .checkout-btn { height: 50px; --box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3); font-weight: 700; letter-spacing: 0.5px; }
+    .text-large { font-size: 1.3rem; color: var(--ion-color-tertiary); }
+    .checkout-btn { height: 45px; --box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3); font-weight: 700; letter-spacing: 0.5px; }
   `]
 })
 export class CartPage {
@@ -143,7 +202,8 @@ export class CartPage {
     private orderService: OrderService,
     private nav: NavController,
     private modalCtrl: ModalController,
-    private notify: NotificationService
+    private notify: NotificationService,
+    private loadingCtrl: LoadingController
   ) {}
 
   updateQty(productId: number, qty: number) {
@@ -176,11 +236,15 @@ export class CartPage {
           return;
       }
       
+      const items = this.cartService.getCurrentValue();
+      const total = items.reduce((acc, i) => acc + i.total, 0);
+
       const modal = await this.modalCtrl.create({
           component: ConfirmationModalComponent,
           componentProps: {
               title: 'Confirmar Pedido',
-              message: '¿Estás seguro de que deseas procesar la compra?'
+              message: '¿Estás seguro de que deseas procesar la compra?',
+              total: total
           },
           cssClass: 'small-modal'
       });
@@ -194,6 +258,12 @@ export class CartPage {
   }
 
   private async processOrder() {
+      const loading = await this.loadingCtrl.create({
+          message: 'Procesando tu pedido...',
+          duration: 5000 // Timeout de seguridad 5s
+      });
+      await loading.present();
+
       const items = this.cartService.getCurrentValue();
       const total = items.reduce((acc, i) => acc + i.total, 0);
       
@@ -203,17 +273,21 @@ export class CartPage {
           total: total,
           date: new Date(),
           status: 'pending',
-          userId: '1'
+          userId: this.auth.currentUserValue?.uid || '1'
       };
 
-      try {
-          // Guardar primero localmente (Estrategia offline-first)
-          await this.orderService.createOrder(order);
+      this.orderService.createOrder(order).subscribe({
+        next: () => {
+          loading.dismiss();
           this.cartService.clearCart();
           this.notify.showSuccess('¡Pedido realizado con éxito!');
           this.nav.navigateRoot('/confirm');
-      } catch (e) {
-          this.notify.showError('Hubo un problema al crear el pedido. Inténtalo de nuevo.');
-      }
+        },
+        error: (err) => {
+          loading.dismiss();
+          console.error('Order creation failed', err);
+          this.notify.showError('Hubo un problema al crear el pedido.');
+        }
+      });
   }
 }

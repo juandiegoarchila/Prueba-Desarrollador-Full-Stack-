@@ -18,6 +18,10 @@ export class AuthService {
   private authStateReadySubject = new BehaviorSubject<boolean>(false);
   public authStateReady$ = this.authStateReadySubject.asObservable();
 
+  public get currentUserValue(): User | null {
+      return this.currentUserSubject.value;
+  }
+
   private repository: AuthRepository;
 
   constructor(private injector: Injector) {

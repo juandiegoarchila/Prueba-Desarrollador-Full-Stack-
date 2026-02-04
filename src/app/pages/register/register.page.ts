@@ -75,8 +75,9 @@ import { AppValidators } from '../../shared/utils/validators.util';
             </div>
 
             <!-- Botón de Acción -->
-            <ion-button expand="block" type="submit" [disabled]="!registerForm.valid" class="main-btn">
-              Registrarme
+            <ion-button expand="block" type="submit" [disabled]="!registerForm.valid || isLoading" class="main-btn">
+              <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+              <span *ngIf="!isLoading">Registrarme</span>
             </ion-button>
           </form>
 
@@ -92,6 +93,7 @@ import { AppValidators } from '../../shared/utils/validators.util';
 })
 export class RegisterPage {
   registerForm: FormGroup;
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -111,13 +113,17 @@ export class RegisterPage {
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.isLoading = true;
       const { name, email, password } = this.registerForm.value;
       this.auth.register(name, email, password).subscribe({
-        next: () => {
-          this.notify.showSuccess('Cuenta creada exitosamente');
-          this.nav.navigateRoot('/catalog');
+        next: async () => {
+          await this.auth.logout(); // Cerramos la sesión automática para forzar el login manual
+          this.isLoading = false;
+          this.notify.showSuccess('¡Registro exitoso! Por favor, inicia sesión para continuar.');
+          this.nav.navigateRoot('/login');
         },
         error: (err) => {
+          this.isLoading = false;
           this.notify.showError('Error al registrar: ' + err);
         }
       });

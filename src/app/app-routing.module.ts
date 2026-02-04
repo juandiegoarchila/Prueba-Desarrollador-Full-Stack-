@@ -39,6 +39,11 @@ const routes: Routes = [
     path: 'confirm',
     loadChildren: () => import('./pages/confirm/confirm.module').then( m => m.ConfirmPageModule),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'orders',
+    loadChildren: () => import('./pages/orders/orders.module').then( m => m.OrdersPageModule),
+    canActivate: [AuthGuard]
   }
 ];
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OrderRepository } from '../order.repository';
 import { Order } from '../../../models/order.model';
 import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
@@ -42,4 +43,3 @@ export class FirebaseOrderRepository implements OrderRepository {
       return Promise.resolve();
   }
 }
-import { map } from 'rxjs/operators';

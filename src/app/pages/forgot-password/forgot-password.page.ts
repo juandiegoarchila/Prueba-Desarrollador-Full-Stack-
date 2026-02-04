@@ -14,13 +14,26 @@ import { NotificationService } from '../../core/services/notification.service';
           
           <div class="header-section">
             <div class="logo-circle">
-              <ion-icon name="lock-open-outline"></ion-icon>
+              <ion-icon name="lock-open-outline" *ngIf="!isSuccess"></ion-icon>
+              <ion-icon name="mail-unread-outline" color="success" *ngIf="isSuccess"></ion-icon>
             </div>
-            <h2>Recuperar Contraseña</h2>
-            <p>Ingresa tu correo para restablecer</p>
+            <h2>{{ isSuccess ? '¡Correo Enviado!' : 'Recuperar Contraseña' }}</h2>
+            <p>{{ isSuccess ? 'Revisa tu bandeja de entrada' : 'Ingresa tu correo para restablecer' }}</p>
           </div>
 
-          <form [formGroup]="resetForm" (ngSubmit)="onSubmit()">
+          <!-- Estado de Éxito con aviso de SPAM -->
+          <div *ngIf="isSuccess" class="success-state">
+            <div class="info-banner">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <p>Si no encuentras el correo en tu bandeja principal, por favor revisa la carpeta de <strong>Correo no deseado o SPAM</strong>.</p>
+            </div>
+            
+            <ion-button expand="block" (click)="goToLogin()" class="main-btn">
+              VOLVER AL INICIO
+            </ion-button>
+          </div>
+
+          <form [formGroup]="resetForm" (ngSubmit)="onSubmit()" *ngIf="!isSuccess">
             
             <div class="input-group">
               <ion-item lines="none" class="custom-item">
@@ -40,18 +53,53 @@ import { NotificationService } from '../../core/services/notification.service';
 
           </form>
 
-          <div class="footer-link">
+          <div class="footer-link" *ngIf="!isSuccess">
             <p>¿Recordaste tu contraseña? <a routerLink="/login">Inicia Sesión</a></p>
           </div>
 
         </div>
       </div>
     </ion-content>
-  `
+  `,
+  styles: [`
+    .success-state {
+      animation: fadeIn 0.5s ease-out;
+    }
+    .info-banner {
+      background-color: rgba(var(--ion-color-secondary-rgb), 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      text-align: left;
+      border: 1px solid rgba(var(--ion-color-secondary-rgb), 0.2);
+    }
+    .info-banner ion-icon {
+      font-size: 28px;
+      color: var(--ion-color-secondary);
+      flex-shrink: 0;
+    }
+    .info-banner p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #444;
+      line-height: 1.5;
+    }
+    .info-banner strong {
+      color: var(--ion-color-secondary);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  `]
 })
 export class ForgotPasswordPage {
   resetForm: FormGroup;
   isLoading = false;
+  isSuccess = false;
 
   constructor(
     private fb: FormBuilder,
@@ -71,8 +119,8 @@ export class ForgotPasswordPage {
 
       try {
         await this.authService.resetPassword(email);
+        this.isSuccess = true;
         this.notify.showSuccess('Correo de recuperación enviado.');
-        this.navCtrl.navigateBack('/login');
       } catch (error: any) {
         let msg = 'Error al enviar el correo.';
          if (error.code === 'auth/user-not-found') {
@@ -85,5 +133,9 @@ export class ForgotPasswordPage {
         this.isLoading = false;
       }
     }
+  }
+
+  goToLogin() {
+    this.navCtrl.navigateBack('/login');
   }
 }

@@ -75,12 +75,17 @@ export class ProductDetailPage implements OnInit {
     });
   }
 
-  addToCart() {
-    if (!this.product) {
+  addToCart(product?: Product) {
+    const targetProduct = product || this.product;
+    if (!targetProduct) {
       return;
     }
-    this.cartService.addToCart(this.product);
-    this.notify.showSuccess(`Agregaste ${this.product.name} al carrito`);
+    this.cartService.addToCart(targetProduct);
+    this.notify.showSuccess(`Agregaste ${targetProduct.name} al carrito`);
     // No navegar al carrito automáticamente para permitir seguir comprando
+  }
+
+  goToCatalog() {
+    this.nav.navigateBack('/catalog');
   }
 }
