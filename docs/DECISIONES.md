@@ -21,3 +21,11 @@
 - Si el envío es exitoso, actualiza el estado local a `synced`.
 - Si falla, queda como `pending` y se preserva la data.
 **Justificación**: Garantiza que el usuario nunca pierda un pedido por falta de internet y desacopla la UI de la latencia de red.
+
+## 5. Detalle de Producto y utilidades compartidas
+**Contexto**: Se requiere una vista de detalle que evite duplicación de lógica de descuentos y calificaciones.
+**Decisión**:
+- Se crea la ruta `product/:id` con pantalla dedicada al detalle del producto.
+- Se centralizan los cálculos de descuento y estrellas en `shared/utils`.
+- La tarjeta de producto muestra un CTA "Conoce más" que navega al detalle.
+**Consecuencias**: Se reduce duplicación, se mejora la escalabilidad del catálogo y se mantiene la UI enfocada en cada página.

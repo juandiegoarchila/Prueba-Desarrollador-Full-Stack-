@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Product } from '../../models/product.model';
+import { ProductRepository } from '../../repositories/product.repository';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private repository: ProductRepository) { }
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>('assets/data/products.json').pipe(
+    return this.repository.getProducts().pipe(
       tap(products => console.log('Productos cargados:', products)),
       catchError(err => {
         console.error('Error cargando products.json, usando backup:', err);
@@ -47,6 +47,12 @@ export class ProductService {
           }
         ]);
       })
+    );
+  }
+
+  getProductById(productId: number): Observable<Product | null> {
+    return this.getProducts().pipe(
+      map(products => products.find(product => product.id === productId) ?? null)
     );
   }
 }

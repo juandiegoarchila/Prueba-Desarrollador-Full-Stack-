@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Product } from '../../../models/product.model';
+import { getStars } from '../../utils/rating.util';
+import { getDiscountPercent } from '../../utils/price.util';
 
 @Component({
   selector: 'app-product-card',
@@ -16,8 +18,15 @@ import { Product } from '../../../models/product.model';
       <ion-card-content>
         <div class="card-info">
             <h3 class="product-title text-semibold">{{ product.name }}</h3>
-            <p class="product-desc text-small">{{ product.description }}</p>
         </div>
+
+        <ion-button
+          fill="clear"
+          size="small"
+          class="details-link"
+          [routerLink]="['/product', product.id]">
+          Conoce más
+        </ion-button>
 
         <div class="price-row">
           <span class="current-price">{{ product.price | currency:'COP':'symbol':'1.0-0' }}</span>
@@ -34,7 +43,7 @@ import { Product } from '../../../models/product.model';
           </ion-icon>
           <span class="rating-value">{{ product.rating | number:'1.1-1' }}</span>
         </div>
-        
+
         <ion-button expand="block" shape="round" color="primary" 
            (click)="onAdd()" class="ion-no-margin add-btn">
           <ion-icon name="cart-outline" slot="start"></ion-icon>
@@ -48,36 +57,12 @@ export class ProductCardComponent {
   @Input() product!: Product;
   @Output() add = new EventEmitter<Product>();
 
+  getStars = getStars;
+  getDiscountPercent = (product: Product): number | null =>
+    getDiscountPercent(product.price, product.previousPrice);
+
   onAdd() {
     this.add.emit(this.product);
   }
 
-  getDiscountPercent(product: Product): number | null {
-    if (!product.previousPrice || product.previousPrice <= product.price) {
-      return null;
-    }
-    const discount = Math.round((1 - product.price / product.previousPrice) * 100);
-    return discount > 0 ? discount : null;
-  }
-
-  getStars(rating: number): string[] {
-    const safeRating = Math.max(0, Math.min(5, rating));
-    const fullStars = Math.floor(safeRating);
-    const hasHalf = safeRating - fullStars >= 0.5;
-    const stars: string[] = [];
-
-    for (let i = 0; i < fullStars; i += 1) {
-      stars.push('star');
-    }
-
-    if (hasHalf) {
-      stars.push('star-half');
-    }
-
-    while (stars.length < 5) {
-      stars.push('star-outline');
-    }
-
-    return stars;
-  }
 }

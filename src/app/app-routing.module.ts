@@ -26,6 +26,11 @@ const routes: Routes = [
     canActivate: [AuthGuard] // Protected
   },
   {
+    path: 'product/:id',
+    loadChildren: () => import('./pages/product-detail/product-detail.module').then( m => m.ProductDetailPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'cart',
     loadChildren: () => import('./pages/cart/cart.module').then( m => m.CartPageModule),
     canActivate: [AuthGuard] // Protected
