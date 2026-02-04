@@ -1,42 +1,177 @@
-# Angular Default
+# ==================================================
+# .gitignore - Grupo Merpes E-Commerce
+# ==================================================
+# Este archivo define qué archivos NO deben subirse a Git
+# para proteger credenciales, optimizar el repo y evitar conflictos.
+# ==================================================
+
+# ============================================
+# ANGULAR & BUILD OUTPUTS
+# ============================================
+# Archivos generados por compilación que se regeneran automáticamente
 dist/
 tmp/
 out-tsc/
 bazel-out/
 test-files/
+www/                     # Build de Ionic/Cordova (se regenera con ionic build)
+.angular/
+.cache/
 
-# Node
+# ============================================
+# NODE.JS
+# ============================================
+# Dependencias de npm (se reinstalan con npm install)
 node_modules/
 npm-debug.log
 yarn-error.log
+yarn.lock
+package-lock.json        # Opcional: algunos equipos lo commitean, otros no
 
+# ============================================
+# IONIC & CORDOVA
+# ============================================
+# Archivos nativos que se regeneran con comandos Cordova
+platforms/               # Plataformas nativas (Android/iOS)
+plugins/                 # Plugins de Cordova instalados
+.ionic/                  # Caché de Ionic CLI
+resources/               # Recursos nativos generados
+
+# ============================================
+# ENTORNOS Y CREDENCIALES (CRÍTICO)
+# ============================================
+# ⚠️ NUNCA subir archivos con claves, tokens o passwords
+.env                          # Variables de entorno locales
+.env.local
+.env.*.local
+src/environments/environment.ts         # Contiene claves de Firebase
+src/environments/environment.prod.ts    # Contiene claves de producción
+
+# Firebase
+google-services.json     # Configuración de Firebase para Android
+GoogleService-Info.plist # Configuración de Firebase para iOS
+firebase-debug.log
+
+# ============================================
+# ANDROID (APKs y archivos de firma)
+# ============================================
+# Binarios compilados y claves de firma (sensibles)
+*.apk                    # APK de debug o release
+*.aab                    # Android App Bundle
+*.ap_                    # Archivos intermedios
+*.dex                    # Dalvik Executable
+*.class                  # Compilados Java
+*.keystore              # ⚠️ CRÍTICO: Clave de firma de la app
+*.jks                   # Java KeyStore (firma)
+release/                # Carpeta con builds de release
+debug/                  # Carpeta con builds de debug
+
+# Gradle (Android)
+.gradle/
+gradle.properties       # Puede contener claves de firma
+local.properties        # Rutas locales del SDK
+
+# ============================================
+# iOS
+# ============================================
+*.ipa                   # Instalador iOS
+*.dSYM.zip
+*.dSYM
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+Pods/
+
+# ============================================
 # IDEs
+# ============================================
+# Configuraciones específicas de editores (excepto algunas compartidas)
+
+# IntelliJ / WebStorm / Android Studio
 .idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+atlassian-ide-plugin.xml
+
+# Eclipse
 .project
 .classpath
 .c9/
 *.launch
 .settings/
-*.sublime-workspace
+.metadata
+.loadpath
 
 # Visual Studio Code
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+!.vscode/settings.json    # Compartir settings del equipo
+!.vscode/tasks.json       # Compartir tareas
+!.vscode/launch.json      # Compartir configuraciones de debug
+!.vscode/extensions.json  # Compartir extensiones recomendadas
+.history/
 
-# Ionic
-www/
-platforms/
-plugins/
-.ionic/
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
 
-# OS
-.DS_Store
+# Vim
+*.swp
+*.swo
+*~
+
+# ============================================
+# SISTEMA OPERATIVO
+# ============================================
+# Archivos generados por el OS
+.DS_Store              # macOS
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db            # Windows
 Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
-# Firebase
-google-services.json
+# ============================================
+# LOGS Y TEMPORALES
+# ============================================
+# Archivos de log y temporales
+*.log
+logs/
+*.tmp
+*.temp
+*.cache
 
-.env
+# ============================================
+# TESTING
+# ============================================
+# Cobertura y reportes de tests
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+e2e/screenshots/
+e2e/videos/
+
+# ============================================
+# OTROS
+# ============================================
+# Archivos misceláneos que no deben versionarse
+*.orig
+*.rej
+*.patch
+.env.backup
+*.bak
