@@ -32,6 +32,13 @@
     "@angular/compiler-cli": "^17.0.0",
     "@ionic/angular-toolkit": "^9.0.0",
     "@types/node": "^12.11.0",
+    "cordova": "^13.0.0",
+    "cordova-android": "^14.0.1",
     "typescript": "~5.2.0"
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ]
   }
 }

@@ -1,12 +1,7 @@
 {
-  "projectId": "grupo-merpes-3fa68",
-  "appId": "1:1012902268947:android:c8226a843c49a2f9cf6fe6",
-  "storageBucket": "grupo-merpes-3fa68.firebasestorage.app",
-  "locationId": "us-central",
-  "apiKey": "AIzaSyDiw1nDaNAK0-PWWTi5TFLyqzCVKEDFBBQ",
-  "authDomain": "grupo-merpes-3fa68.firebaseapp.com",
-  "type": "angular",
+  "name": "prueba-fullstack-ionic",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "type": "angular"
 }

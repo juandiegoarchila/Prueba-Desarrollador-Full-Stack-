@@ -2,7 +2,7 @@ export const environment = {
   production: false,
   useFirebase: true, // Flag to switch between Local and Firebase
   firebase: {
-    apiKey: "YOUR_API_KEY",
+    apiKey: "AIzaSyDiw1nDaNAK0-PWWTi5TFLyqzCVKEDFBBQ",
     authDomain: "grupo-merpes-3fa68.firebaseapp.com",
     projectId: "grupo-merpes-3fa68",
     storageBucket: "grupo-merpes-3fa68.firebasestorage.app",

@@ -12,60 +12,130 @@ import { Order } from '../../models/order.model';
 @Component({
   selector: 'app-cart',
   template: `
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button defaultHref="/catalog"></ion-back-button>
-        </ion-buttons>
-        <ion-title>Carrito</ion-title>
-        <ion-buttons slot="end">
-            <ion-button (click)="clearCart()" color="danger">
-                <ion-icon name="trash" slot="icon-only"></ion-icon>
-            </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
+    <app-header title="Tu Carrito" [backButton]="true">
+        <ion-button (click)="confirmClear()" color="danger" *ngIf="(cartItems$ | async)?.length">
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+    </app-header>
 
-    <ion-content class="ion-padding">
-      <ion-list *ngIf="(cartItems$ | async)?.length as count; else empty">
-        <ion-item *ngFor="let item of (cartItems$ | async)">
-          <ion-thumbnail slot="start">
-            <img [src]="item.product.imageUrl">
-          </ion-thumbnail>
-          <ion-label>
-            <h2>{{ item.product.name }}</h2>
-            <p>{{ item.product.price | currency:'COP':'symbol':'1.0-0' }} x {{ item.quantity }}</p>
-          </ion-label>
-          <ion-note slot="end">
-            {{ item.total | currency:'COP':'symbol':'1.0-0' }}
-          </ion-note>
-          <ion-button fill="clear" color="danger" slot="end" (click)="removeItem(item.product.id)">
-            <ion-icon name="close-circle"></ion-icon>
-          </ion-button>
-        </ion-item>
-      </ion-list>
+    <ion-content class="ion-padding" color="light">
+      
+      <div *ngIf="cartItems$ | async as items">
+        
+        <div *ngIf="items.length > 0; else emptyCart">
+          <ion-list class="cart-list ion-no-padding">
+            
+            <ion-item-sliding *ngFor="let item of items" class="cart-item">
+              <ion-item lines="none" class="item-inner">
+                <ion-thumbnail slot="start" class="rounded-thumb">
+                  <img [src]="item.product.imageUrl">
+                </ion-thumbnail>
+                
+                <ion-label>
+                  <h3 class="text-semibold text-dark">{{ item.product.name }}</h3>
+                  <p class="price-text">{{ item.product.price | currency:'COP':'symbol':'1.0-0' }}</p>
+                  
+                  <div class="stepper">
+                    <ion-button size="small" fill="outline" color="medium" (click)="updateQty(item.product.id, item.quantity - 1)">
+                        <ion-icon name="remove" slot="icon-only"></ion-icon>
+                    </ion-button>
+                    <span class="qty-label">{{ item.quantity }}</span>
+                    <ion-button size="small" fill="outline" color="medium" (click)="updateQty(item.product.id, item.quantity + 1)">
+                        <ion-icon name="add" slot="icon-only"></ion-icon>
+                    </ion-button>
+                  </div>
+                </ion-label>
+                
+                <div slot="end" class="total-column">
+                  <span class="text-bold text-dark">{{ item.total | currency:'COP':'symbol':'1.0-0' }}</span>
+                </div>
+              </ion-item>
 
-      <ng-template #empty>
-        <div class="ion-text-center ion-padding">
-          <h3>Tu carrito está vacío</h3>
-          <ion-button routerLink="/catalog" fill="outline">Ir al catálogo</ion-button>
+              <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="removeItem(item.product.id)">
+                  <ion-icon name="trash" slot="icon-only"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+
+          </ion-list>
         </div>
-      </ng-template>
+
+        <ng-template #emptyCart>
+           <app-empty-state 
+                title="Carrito vacío" 
+                description="Aquí verás los productos que selecciones." 
+                icon="cart-outline"
+                actionText="Ir al catálogo"
+                (action)="goToCatalog()">
+           </app-empty-state>
+        </ng-template>
+
+      </div>
     </ion-content>
 
-    <ion-footer *ngIf="(cartItems$ | async)?.length">
-      <ion-toolbar>
-        <ion-title slot="start">Total: {{ total | currency:'COP':'symbol':'1.0-0' }}</ion-title>
-        <ion-button slot="end" (click)="checkout()" color="success" class="ion-margin-end">
-          Finalizar Compra
-        </ion-button>
-      </ion-toolbar>
+    <ion-footer *ngIf="(total$ | async) as total" class="ion-no-border shadow-card">
+       <div *ngIf="total > 0" class="footer-container">
+          <div class="total-row">
+              <span class="text-medium text-muted">Total a pagar:</span>
+              <span class="text-bold text-large">{{ total | currency:'COP':'symbol':'1.0-0' }}</span>
+          </div>
+          <ion-button expand="block" shape="round" color="success" class="checkout-btn" (click)="checkout()">
+              FINALIZAR COMPRA
+              <ion-icon name="arrow-forward" slot="end"></ion-icon>
+          </ion-button>
+       </div>
     </ion-footer>
-  `
+  `,
+  styles: [`
+    .cart-list { background: transparent; }
+    .cart-item {
+        margin-bottom: 15px;
+        border-radius: 12px;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    .item-inner { --background: white; --inner-padding-end: 10px; }
+    .rounded-thumb { --border-radius: 10px; }
+    .text-dark { color: var(--ion-color-tertiary); }
+    .price-text { color: var(--ion-color-primary); font-weight: 500; }
+    
+    .stepper {
+        display: flex;
+        align-items: center;
+        margin-top: 8px;
+        gap: 10px;
+    }
+    .qty-label { font-weight: 600; min-width: 20px; text-align: center; }
+    
+    .total-column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    .footer-container {
+        background: white;
+        padding: 20px 20px 30px; /* Safe area bottom */
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        border-radius: 20px 20px 0 0;
+    }
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .text-large { font-size: 1.4rem; color: var(--ion-color-tertiary); }
+    .checkout-btn { height: 50px; --box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3); font-weight: 700; letter-spacing: 0.5px; }
+  `]
 })
-export class CartPage implements OnInit {
-  cartItems$: Observable<CartItem[]>;
-  total: number = 0;
+export class CartPage {
+  cartItems$ = this.cartService.cart$;
+  total$ = this.cartService.total$;
 
   constructor(
     private cartService: CartService,
@@ -74,69 +144,76 @@ export class CartPage implements OnInit {
     private nav: NavController,
     private modalCtrl: ModalController,
     private notify: NotificationService
-  ) {
-      this.cartItems$ = this.cartService.cart$;
-  }
+  ) {}
 
-  ngOnInit() {
-      this.cartItems$.subscribe(() => {
-          this.total = this.cartService.getTotal();
-      });
+  updateQty(productId: number, qty: number) {
+      if (qty <= 0) {
+          this.removeItem(productId);
+      } else {
+          this.cartService.updateQuantity(productId, qty);
+      }
   }
 
   removeItem(id: number) {
       this.cartService.removeFromCart(id);
+      this.notify.showWarning('Producto eliminado');
   }
 
-  clearCart() {
+  confirmClear() {
+      // Implementar modal de confirmación aquí si se desea
       this.cartService.clearCart();
+      this.notify.showInfo('Carrito vaciado');
+  }
+
+  goToCatalog() {
+      this.nav.navigateBack('/catalog');
   }
 
   async checkout() {
       if (!this.auth.isAuthenticated()) {
-          this.notify.showInfo('Debes iniciar sesión para comprar');
+          this.notify.showInfo('Debes iniciar sesión para finalizar tu compra');
           this.nav.navigateForward('/login');
           return;
       }
-
+      
       const modal = await this.modalCtrl.create({
           component: ConfirmationModalComponent,
           componentProps: {
               title: 'Confirmar Pedido',
-              message: `¿Deseas realizar la compra por un total de ${this.total}?`
-          }
+              message: '¿Estás seguro de que deseas procesar la compra?'
+          },
+          cssClass: 'small-modal'
       });
 
       await modal.present();
-      const { data, role } = await modal.onWillDismiss();
+      const { data } = await modal.onWillDismiss();
 
-      if (role === 'confirm') {
+      if (data && data.confirmed) {
           this.processOrder();
       }
   }
 
-  private processOrder() {
-      this.auth.currentUser$.subscribe(user => {
-          if (!user) return; // Should not happen due to check above
+  private async processOrder() {
+      const items = this.cartService.getCurrentValue();
+      const total = items.reduce((acc, i) => acc + i.total, 0);
+      
+      const order: Order = {
+          id: Date.now().toString(),
+          items: items,
+          total: total,
+          date: new Date(),
+          status: 'pending',
+          userId: '1'
+      };
 
-          const order: Order = {
-              id: new Date().getTime().toString(),
-              userId: user.uid,
-              items: this.cartService.getItems(),
-              total: this.total,
-              date: new Date(),
-              status: 'pending'
-          };
-
-          this.orderService.createOrder(order).subscribe({
-              next: () => {
-                  this.cartService.clearCart();
-                  this.nav.navigateRoot('/confirm');
-              },
-              error: (err) => {
-                  this.notify.showError('Error al crear pedido: ' + err);
-              }
-          });
-      });
+      try {
+          // Guardar primero localmente (Estrategia offline-first)
+          await this.orderService.createOrder(order);
+          this.cartService.clearCart();
+          this.notify.showSuccess('¡Pedido realizado con éxito!');
+          this.nav.navigateRoot('/confirm');
+      } catch (e) {
+          this.notify.showError('Hubo un problema al crear el pedido. Inténtalo de nuevo.');
+      }
   }
 }
