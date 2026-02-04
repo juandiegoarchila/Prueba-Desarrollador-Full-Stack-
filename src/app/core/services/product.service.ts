@@ -20,24 +20,27 @@ export class ProductService {
         return of([
           {
             "id": 1,
-            "name": "Smartphone Grupo Merpes X1",
-            "price": 1500000,
-            "description": "El mejor rendimiento para tus ventas.",
-            "imageUrl": "assets/img/dummy-phone.png"
+            "name": "Lavadora LG Asfecol 13Kg Carga Superior Gris",
+            "price": 1499900,
+            "previousPrice": 1994900,
+            "description": "Carga superior de 13 kg con diseño compacto y eficiente.",
+            "imageUrl": "assets/img/products/lavadora-lg-13kg.png"
           },
           {
             "id": 2,
-            "name": "Tablet Pro 2025",
-            "price": 2300000,
-            "description": "Portabilidad y potencia en 10 pulgadas.",
-            "imageUrl": "assets/img/dummy-tablet.png"
+            "name": "Televisor Samsung 32\" T4300",
+            "price": 760900,
+            "previousPrice": 1011900,
+            "description": "Televisor HD de 32\" con colores vivos y gran nitidez.",
+            "imageUrl": "assets/img/products/tv-samsung-32.png"
           },
           {
             "id": 3,
-            "name": "Audífonos Noise Cancel",
-            "price": 450000,
-            "description": "Concéntrate en lo importante.",
-            "imageUrl": "assets/img/dummy-headphones.png"
+            "name": "Portátil Lenovo 14\" GL7 ICN4020/4Ram/128Gb/W11",
+            "price": 879748,
+            "previousPrice": 1169664,
+            "description": "Portátil de 14\" ideal para trabajo diario y estudio.",
+            "imageUrl": "assets/img/products/portatil-lenovo-14.png"
           }
         ]);
       })
