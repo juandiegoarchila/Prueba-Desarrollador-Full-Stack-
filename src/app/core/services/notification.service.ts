@@ -9,32 +9,31 @@ export class NotificationService {
   constructor(private toastController: ToastController) { }
 
   async showSuccess(message: string) {
-      const toast = await this.toastController.create({
-          message,
-          duration: 2000,
-          color: 'success',
-          position: 'bottom'
-      });
-      toast.present();
+      await this.presentToast(message, 'success', 'checkmark-circle-outline');
   }
 
   async showError(message: string) {
-      const toast = await this.toastController.create({
-          message,
-          duration: 3000,
-          color: 'danger',
-          position: 'bottom'
-      });
-      toast.present();
+      await this.presentToast(message, 'danger', 'alert-circle-outline');
   }
 
   async showInfo(message: string) {
+      await this.presentToast(message, 'primary', 'information-circle-outline');
+  }
+
+  async showWarning(message: string) {
+      await this.presentToast(message, 'warning', 'warning-outline');
+  }
+
+  private async presentToast(message: string, color: string, icon: string) {
       const toast = await this.toastController.create({
           message,
-          duration: 2000,
-          color: 'medium',
-          position: 'bottom'
+          icon,
+          duration: 3000,
+          color,
+          position: 'bottom',
+          buttons: [{ icon: 'close', role: 'cancel', handler: () => {} }],
+          cssClass: 'custom-toast'
       });
-      toast.present();
+      await toast.present();
   }
 }

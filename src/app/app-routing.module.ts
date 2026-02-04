@@ -5,7 +5,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'catalog',
+    redirectTo: 'login', // Redirect to login by default
     pathMatch: 'full'
   },
   {
@@ -17,12 +17,18 @@ const routes: Routes = [
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
   },
   {
+    path: 'forgot-password',
+    loadChildren: () => import('./pages/forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
+  },
+  {
     path: 'catalog',
-    loadChildren: () => import('./pages/catalog/catalog.module').then( m => m.CatalogPageModule)
+    loadChildren: () => import('./pages/catalog/catalog.module').then( m => m.CatalogPageModule),
+    canActivate: [AuthGuard] // Protected
   },
   {
     path: 'cart',
-    loadChildren: () => import('./pages/cart/cart.module').then( m => m.CartPageModule)
+    loadChildren: () => import('./pages/cart/cart.module').then( m => m.CartPageModule),
+    canActivate: [AuthGuard] // Protected
   },
   {
     path: 'confirm',
