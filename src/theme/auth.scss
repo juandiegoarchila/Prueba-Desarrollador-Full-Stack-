@@ -1,0 +1,228 @@
+
+/* ---- Estilos Globales de Autenticación (Login, Registro, Recuperar) ---- */
+
+.auth-content {
+  --background: #f4f5f8;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Ocupa exactamente el alto de la pantalla */
+  width: 100%;
+  padding: 15px;
+  overflow: hidden; /* Evita scroll innecesario */
+}
+
+.auth-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px -10px rgba(108, 92, 231, 0.3);
+  padding: 30px 25px;
+  text-align: center;
+  margin: auto;
+  
+  /* Flex para distribuir mejor el espacio interno */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ---- ADAPTACIÓN PANTALLAS PEQUEÑAS (Responsividad Vertical) ---- */
+
+/* Para móviles con poca altura (ej. teclado abierto o pantallas chicas) */
+@media (max-height: 750px) {
+  .auth-card {
+    padding: 20px 20px;
+  }
+
+  .logo-circle {
+    width: 60px !important;
+    height: 60px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .logo-circle ion-icon {
+    font-size: 28px !important;
+  }
+
+  .header-section {
+    margin-bottom: 15px !important;
+  }
+
+  .header-section h1, .header-section h2 {
+    font-size: 1.4rem !important;
+  }
+
+  .input-group {
+    margin-bottom: 12px !important;
+  }
+
+  .custom-item {
+    --min-height: 48px !important;
+  }
+
+  .main-btn {
+    height: 48px !important;
+    margin-top: 5px !important;
+  }
+
+  .footer-link {
+    margin-top: 15px !important;
+  }
+}
+
+/* Para móviles MUY pequeños (iPhone SE, etc.) */
+@media (max-height: 600px) {
+  .header-section p {
+    display: none; /* Ocultar subtítulo para ganar espacio */
+  }
+  .logo-circle {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+/* --------------------------------------------------------------- */
+
+/* Header */
+.header-section {
+  margin-bottom: 30px;
+}
+
+.logo-circle {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+}
+
+.logo-circle ion-icon {
+  font-size: 36px;
+  color: white;
+}
+
+.header-section h1, .header-section h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  color: #2d3436;
+  font-size: 1.8rem;
+  margin: 0 0 5px;
+}
+
+.header-section p {
+  font-family: 'Poppins', sans-serif;
+  color: #b2bec3;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Inputs */
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.custom-item {
+  --background: #f1f2f6;
+  --border-radius: 12px;
+  --padding-start: 15px;
+  --inner-padding-end: 15px;
+  --min-height: 56px;
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: none;
+}
+
+.custom-item ion-icon {
+  margin-right: 10px;
+}
+
+ion-input {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  --color: #2d3436;
+  --placeholder-color: #a4b0be;
+}
+
+.error-msg {
+  padding-left: 15px;
+  padding-top: 5px;
+  color: #ff7675;
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Forgot Password Link */
+.forgot-password {
+  margin-bottom: 25px;
+}
+
+.forgot-password a {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  color: #636e72;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Button */
+.main-btn {
+  --background: linear-gradient(90deg, #6c5ce7 0%, #a29bfe 100%);
+  --background-hover: #5f27cd;
+  --border-radius: 14px;
+  --box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+  --color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  height: 54px;
+  text-transform: none;
+  letter-spacing: 0.5px;
+}
+
+/* Footer */
+.footer-link {
+  margin-top: 30px;
+}
+
+.footer-link p {
+  font-family: 'Poppins', sans-serif;
+  color: #636e72;
+  font-size: 0.9rem;
+}
+
+.footer-link a {
+  color: #6c5ce7;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Animation */
+.fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
