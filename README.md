@@ -11,6 +11,7 @@ Aplicación móvil híbrida de e-commerce desarrollada con **Ionic 7 + Angular 1
 
 ## 📋 Tabla de Contenidos
 
+- [Capturas de Pantalla](#-capturas-de-pantalla)
 - [Características](#-características)
 - [Tecnologías](#-tecnologías)
 - [Requisitos Previos](#-requisitos-previos)
@@ -24,6 +25,37 @@ Aplicación móvil híbrida de e-commerce desarrollada con **Ionic 7 + Angular 1
 - [Credenciales de Prueba](#-credenciales-de-prueba)
 - [Troubleshooting](#-troubleshooting)
 - [Autor](#-autor)
+
+---
+
+## 📸 Capturas de Pantalla
+
+### Autenticación
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+  <img src="src/assets/screenshots/login.jpg" alt="Login" width="250"/>
+  <img src="src/assets/screenshots/register.jpg" alt="Registro" width="250"/>
+  <img src="src/assets/screenshots/forgot-password.jpg" alt="Recuperar Contraseña" width="250"/>
+</div>
+
+### Catálogo y Productos
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+  <img src="src/assets/screenshots/catalog.jpg" alt="Catálogo de Productos" width="250"/>
+  <img src="src/assets/screenshots/product 1.jpg" alt="Detalle del Producto" width="250"/>
+  <img src="src/assets/screenshots/product 1  Descripción.jpg" alt="Descripción del Producto" width="250"/>
+</div>
+
+### Carrito y Checkout
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+  <img src="src/assets/screenshots/cart.jpg" alt="Carrito de Compras" width="250"/>
+  <img src="src/assets/screenshots/confirm.jpg" alt="Confirmación de Pedido" width="250"/>
+  <img src="src/assets/screenshots/Confirmar Pedido.jpg" alt="Resumen de Pedido" width="250"/>
+</div>
+
+### Gestión de Órdenes
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+  <img src="src/assets/screenshots/orderss.jpg" alt="Historial de Órdenes 1" width="250"/>
+  <img src="src/assets/screenshots/orders 2.jpg" alt="Historial de Órdenes 2" width="250"/>
+</div>
 
 ---
 
