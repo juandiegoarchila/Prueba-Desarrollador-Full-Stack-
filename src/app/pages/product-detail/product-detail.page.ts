@@ -232,6 +232,21 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   }
 
   /**
+   * Abre el modal de zoom de imagen en pantalla completa.
+   * 
+   * **Funcionalidad específica para móviles:**
+   * Este método se activa con (click) y (touchend) para asegurar 
+   * compatibilidad con eventos táctiles en dispositivos Android/iOS.
+   * 
+   * **Prevención de doble activación:**
+   * Se usa $event.stopPropagation() en el template si es necesario,
+   * pero en este caso no hay conflicto porque es el único handler.
+   */
+  openImageModal() {
+    this.isImageModalOpen = true;
+  }
+
+  /**
    * Hook de destrucción que limpia las subscripciones.
    * Cancela todas las subscripciones activas (paramMap, getProductById, getRelatedProducts)
    * para prevenir memory leaks.

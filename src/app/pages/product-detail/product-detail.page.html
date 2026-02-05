@@ -22,7 +22,7 @@
       
       <!-- Left Column: Gallery (Mitad) -->
       <ion-col size="12" size-md="6" size-lg="6" class="gallery-col">
-        <div class="main-image-wrapper" (click)="isImageModalOpen = true">
+        <div class="main-image-wrapper" (click)="openImageModal()" (touchend)="openImageModal()">
           <ion-img [src]="selectedImage || product.imageUrl" [alt]="product.name"></ion-img>
           
           <div class="badges">

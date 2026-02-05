@@ -59,25 +59,47 @@
     position: absolute;
     bottom: 16px;
     right: 16px;
-    background: rgba(var(--ion-color-dark-rgb), 0.5);
+    background: rgba(var(--ion-color-primary-rgb), 0.85);
     color: white;
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(4px);
     transition: transform 0.2s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+    pointer-events: none; // No interferir con el click de la imagen
     
     ion-icon {
-      font-size: 20px;
+      font-size: 22px;
+    }
+    
+    // Animación pulsante para llamar atención en móvil
+    @media (max-width: 767px) {
+      animation: pulse 2s infinite;
     }
   }
 
   &:hover .zoom-hint {
     transform: scale(1.1);
-    background: rgba(var(--ion-color-primary-rgb), 0.8);
+    background: rgba(var(--ion-color-primary-rgb), 1);
+  }
+  
+  &:active .zoom-hint {
+    transform: scale(0.95);
+  }
+}
+
+// Animación pulsante para el icono de zoom en móvil
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
   }
 }
 
