@@ -122,8 +122,8 @@ echo %ANDROID_HOME% # Windows
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/tu-usuario/prueba-fullstack-ionic.git
-cd prueba-fullstack-ionic
+git clone https://github.com/juandiegoarchila/Prueba-Desarrollador-Full-Stack-.git
+cd Prueba-Desarrollador-Full-Stack-
 ```
 
 ### 2. Instalar dependencias
@@ -475,9 +475,10 @@ cp src/environments/environment.template.ts src/environments/environment.ts
 
 ## 👨‍💻 Autor
 
-**Candidato Full Stack Developer**  
-📧 Email: candidato@email.com  
-🔗 LinkedIn: [linkedin.com/in/candidato](https://linkedin.com/in/candidato)  
+**Juan Diego Archila León**  
+Full Stack Developer  
+📧 Email: juandiegoarchilaeon@gmail.com  
+🔗 LinkedIn: [linkedin.com/in/juandiegoarchilaleon](https://www.linkedin.com/in/juandiegoarchilaleon)  
 📅 Fecha: Febrero 2026
 
 ---
