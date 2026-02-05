@@ -446,21 +446,31 @@ Los componentes reutilizables usan `OnPush` para optimizar performance:
 
 ---
 
-## 🔑 Credenciales de Prueba
+## 🔑 Cómo Usar la Aplicación
 
-Para probar la aplicación sin necesidad de registrarse:
+### Primera vez - Registro
+La aplicación **NO tiene usuarios predefinidos**. Para comenzar:
 
-### Usuario de Prueba
+1. **Abre la aplicación**
+2. **Haz clic en "Registrarse"** en la pantalla de login
+3. **Completa el formulario:**
+   - Nombre: Tu nombre
+   - Email: cualquier@email.com
+   - Contraseña: mínimo 6 caracteres
+4. **Confirma la contraseña**
+5. **Clic en "Registrarse"**
+
+### Login posterior
+Usa las credenciales que registraste:
 ```
-Email: test@test.com
-Password: 123456
+Email: el-que-registraste@email.com
+Password: tu-contraseña
 ```
 
-### Usuario Administrador (Futuro)
-```
-Email: admin@test.com
-Password: admin123
-```
+### ⚠️ Nota importante
+- Los datos se guardan **localmente en el dispositivo**
+- Si desinstalas la app, **pierdes los datos**
+- Cada dispositivo tiene su propia base de datos local
 
 ---
 
