@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { CartItem } from '../../models/cart-item.model';
 import { Product } from '../../models/product.model';
 import { StorageService } from '../storage/storage.service';
+import { AuthService } from './auth.service';
 
 /**
  * Servicio de gestión del carrito de compras.
@@ -13,7 +14,7 @@ import { StorageService } from '../storage/storage.service';
  * 
  * **Características principales:**
  * - Estado reactivo con BehaviorSubject (permite acceso síncrono + subscripciones)
- * - Persistencia automática en Storage (carrito sobrevive al cierre de la app)
+ * - Persistencia automática en Storage AISLADA POR USUARIO (cada usuario tiene su carrito)
  * - Cálculo automático de totales y cantidad de items con operadores RxJS
  * - Gestión de cantidades con validación (no permite cantidades negativas)
  * 
@@ -83,33 +84,65 @@ export class CartService {
     map(items => items.reduce((acc, item) => acc + item.quantity, 0))
   );
 
-  constructor(private storage: StorageService) {
-      // Cargar el carrito desde Storage al iniciar el servicio
-      this.loadCart();
+  /**
+   * Email del usuario actual para construir claves de storage aisladas.
+   * Se actualiza cada vez que cambia el usuario autenticado.
+   */
+  private currentUserEmail: string | null = null;
+
+  constructor(
+    private storage: StorageService,
+    private authService: AuthService
+  ) {
+    // Suscribirse a cambios de usuario para cargar el carrito correspondiente
+    this.authService.currentUser$.subscribe(user => {
+      if (user && user.email) {
+        this.currentUserEmail = user.email;
+        this.loadCart();
+      } else {
+        // Usuario deslogueado: limpiar carrito de la memoria
+        this.currentUserEmail = null;
+        this.cartItems.next([]);
+      }
+    });
   }
 
   /**
-   * Carga el carrito desde Storage al inicializar el servicio.
-   * Se ejecuta automáticamente en el constructor.
+   * Genera la clave de storage específica para el usuario actual.
+   * Formato: 'cart_usuario@email.com'
+   * Esto asegura que cada usuario tenga su propio carrito aislado.
+   */
+  private getCartKey(): string {
+    return this.currentUserEmail ? `cart_${this.currentUserEmail}` : 'cart_guest';
+  }
+
+  /**
+   * Carga el carrito desde Storage usando la clave específica del usuario.
+   * Se ejecuta automáticamente cuando cambia el usuario autenticado.
    * Si no hay datos guardados, el carrito queda vacío.
    */
   private async loadCart() {
-      const items = await this.storage.get('cart');
-      // Type guard: verificar que sea un array antes de usarlo
-      if (items && Array.isArray(items)) {
-          this.cartItems.next(items as CartItem[]);
-      }
+    const key = this.getCartKey();
+    const items = await this.storage.get(key);
+    // Type guard: verificar que sea un array antes de usarlo
+    if (items && Array.isArray(items)) {
+      this.cartItems.next(items as CartItem[]);
+    } else {
+      // Si no hay carrito guardado, iniciar vacío
+      this.cartItems.next([]);
+    }
   }
 
   /**
-   * Guarda el carrito en Storage y actualiza el BehaviorSubject.
+   * Guarda el carrito en Storage usando la clave específica del usuario y actualiza el BehaviorSubject.
    * Este método centraliza la persistencia para evitar inconsistencias.
    * 
    * @param items - Array de items del carrito a guardar
    */
   private saveCart(items: CartItem[]) {
-      this.cartItems.next(items);
-      this.storage.set('cart', items);
+    const key = this.getCartKey();
+    this.cartItems.next(items);
+    this.storage.set(key, items);
   }
 
   /**

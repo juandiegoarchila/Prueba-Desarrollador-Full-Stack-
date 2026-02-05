@@ -37,9 +37,10 @@ export class FirebaseOrderRepository implements OrderRepository {
     }));
   }
 
-  async updateStatus(orderId: string, status: 'pending' | 'synced' | 'completed'): Promise<void> {
+  async updateStatus(orderId: string, status: 'pending' | 'synced' | 'completed', userId: string): Promise<void> {
       // In firebase we might update the doc, but for now we assume createOrder handles it or we implement doc update later
       // This is primarily for local sync status
+      // userId parameter added for interface consistency
       return Promise.resolve();
   }
 }

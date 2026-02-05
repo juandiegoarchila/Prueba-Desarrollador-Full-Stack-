@@ -164,7 +164,7 @@ export class OrderService {
                   this.firebaseRepo.createOrder(savedOrder).pipe(
                       tap(() => {
                           // Sincronización exitosa: actualizar status a 'synced'
-                          this.localRepo.updateStatus(savedOrder.id, 'synced');
+                          this.localRepo.updateStatus(savedOrder.id, 'synced', savedOrder.userId);
                           
                           // Actualizar el status en la UI
                           const updatedOrders = this.ordersSubject.value.map(o => 

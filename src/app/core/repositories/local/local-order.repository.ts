@@ -56,8 +56,14 @@ import { StorageService } from '../../storage/storage.service';
   providedIn: 'root'
 })
 export class LocalOrderRepository implements OrderRepository {
-  /** Clave de Storage donde se guardan todos los pedidos */
-  private readonly ORDERS_KEY = 'local_orders';
+  /**
+   * Genera la clave de Storage específica para los pedidos de cada usuario.
+   * Formato: 'orders_usuario@email.com' o 'orders_userId'
+   * Esto asegura que cada usuario tenga sus propios pedidos aislados.
+   */
+  private getOrdersKey(userId: string): string {
+    return `orders_${userId}`;
+  }
 
   constructor(private storage: StorageService) {}
 
@@ -94,19 +100,22 @@ export class LocalOrderRepository implements OrderRepository {
     return new Observable(observer => {
       const run = async () => {
         try {
-          // 1. Leer pedidos existentes desde Storage
-          const orders = await this.storage.get(this.ORDERS_KEY);
+          // 1. Obtener clave específica del usuario
+          const key = this.getOrdersKey(order.userId);
           
-          // 2. Type guard: asegurar que sea un array
+          // 2. Leer pedidos existentes del usuario desde Storage
+          const orders = await this.storage.get(key);
+          
+          // 3. Type guard: asegurar que sea un array
           const currentOrders: Order[] = Array.isArray(orders) ? orders : [];
           
-          // 3. Agregar el nuevo pedido al array
+          // 4. Agregar el nuevo pedido al array
           currentOrders.push(order);
           
-          // 4. Guardar el array actualizado en Storage
-          await this.storage.set(this.ORDERS_KEY, currentOrders);
+          // 5. Guardar el array actualizado en Storage con la clave del usuario
+          await this.storage.set(key, currentOrders);
           
-          // 5. Emitir el pedido creado exitosamente
+          // 6. Emitir el pedido creado exitosamente
           observer.next(order);
           observer.complete();
         } catch (err) {
@@ -140,17 +149,20 @@ export class LocalOrderRepository implements OrderRepository {
     return new Observable(observer => {
       const run = async () => {
         try {
-          // 1. Leer todos los pedidos desde Storage
-          const orders = await this.storage.get(this.ORDERS_KEY);
+          // 1. Obtener clave específica del usuario
+          const key = this.getOrdersKey(userId);
           
-          // 2. Type guard: asegurar que sea un array
+          // 2. Leer los pedidos del usuario desde Storage
+          const orders = await this.storage.get(key);
+          
+          // 3. Type guard: asegurar que sea un array
           const ordersList: Order[] = Array.isArray(orders) ? orders : [];
           
-          // 3. Filtrar solo los pedidos del usuario especificado
-          const userOrders = ordersList.filter((o: Order) => o.userId === userId);
+          // 4. Los pedidos ya están filtrados por usuario gracias a la clave específica
+          // No es necesario filtrar adiccionalmente porque cada usuario tiene su propia clave
           
-          // 4. Emitir el array filtrado
-          observer.next(userOrders);
+          // 5. Emitir el array de pedidos
+          observer.next(ordersList);
           observer.complete();
         } catch (err) {
           observer.error(err);
@@ -184,21 +196,24 @@ export class LocalOrderRepository implements OrderRepository {
    * // Marcar como completado después de entrega
    * await this.localOrderRepo.updateStatus('1234567890', 'completed');
    */
-  async updateStatus(orderId: string, status: 'pending' | 'synced' | 'completed'): Promise<void> {
-      // 1. Leer todos los pedidos desde Storage
-      const ordersData = await this.storage.get(this.ORDERS_KEY);
-      
-      // 2. Type guard: asegurar que sea un array
-      const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
-      
-      // 3. Buscar el índice del pedido a actualizar
-      const orderIndex = orders.findIndex((o: Order) => o.id === orderId);
-      
-      // 4. Si se encuentra, actualizar el status y guardar
-      if (orderIndex > -1) {
-          orders[orderIndex].status = status;
-          await this.storage.set(this.ORDERS_KEY, orders);
-      }
-      // Si no se encuentra, no hace nada (operación idempotente)
+  async updateStatus(orderId: string, status: 'pending' | 'synced' | 'completed', userId: string): Promise<void> {
+    // 1. Obtener clave específica del usuario
+    const key = this.getOrdersKey(userId);
+    
+    // 2. Leer pedidos del usuario desde Storage
+    const ordersData = await this.storage.get(key);
+    
+    // 3. Type guard: asegurar que sea un array
+    const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
+    
+    // 4. Buscar el índice del pedido a actualizar
+    const orderIndex = orders.findIndex((o: Order) => o.id === orderId);
+    
+    // 5. Si se encuentra, actualizar el status y guardar
+    if (orderIndex > -1) {
+      orders[orderIndex].status = status;
+      await this.storage.set(key, orders);
+    }
+    // Si no se encuentra, no hace nada (operación idempotente)
   }
 }
