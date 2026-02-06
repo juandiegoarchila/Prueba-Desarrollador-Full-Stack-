@@ -626,16 +626,6 @@ this.form = this.fb.group({
 
 ---
 
-## 📞 Contacto
-
-Si tienes dudas sobre estas guías:
-
-- 📧 Email: tech-lead@grupomerpes.com
-- 💬 Slack: #desarrollo-ionic
-- 📝 Wiki: [Confluence - Guías de Desarrollo](https://wiki.grupomerpes.com)
-
----
-
 ## 📄 Licencia
 
 Este proyecto es privado y propiedad de **Grupo Merpes**.
